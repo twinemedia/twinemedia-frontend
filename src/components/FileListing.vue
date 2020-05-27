@@ -1,0 +1,93 @@
+<template>
+    <div v-if="display == 'block'" class="file-listing">
+        <p><b>{{ file.name ? file.name : file.filename }}</b></p>
+        <p>Type: {{ file.mime }}</p>
+        <p>Size: {{ $root.formatSize(file.size) }}</p>
+    </div>
+    <div v-else-if="display == 'preview'" class="file-listing file-listing-preview">
+        <router-link :to="'/file/'+file.id">
+            <img v-if="file.thumbnail" :src="thumbsRoot+file.id" height="120" />
+            <img v-else src="../assets/files.png" height="120" />
+            <br>
+            <b>{{ $root.limit(file.name || file.filename, 50) }}</b>
+            <br>
+            <i>({{ $root.limit(file.filename, 50) }})</i>
+        </router-link>
+        <p><a :href="filesRoot+file.id+'/'+$root.urlEncode(file.filename)">Download</a></p>
+    </div>
+    <tr v-else class="file-listing">
+        <td>
+            <router-link :to="'/file/'+file.id">
+                <template v-if="file.name">{{ $root.limit(file.name, 50) }}</template>
+                <i v-else>Same as filename</i>
+            </router-link>
+        </td>
+        <td>
+            <router-link :to="'/file/'+file.id">
+                {{ $root.limit(file.filename, 50) }}
+            </router-link>
+        </td>
+        <td v-if="file.processing">
+            <i>File is processing</i>
+        </td>
+        <td v-else>
+            {{ $root.formatSize(file.size) }}
+            <template v-if="file.size >= 1024">({{ file.size }} bytes)</template>
+        </td>
+        <td>
+            {{ file.mime }}
+        </td>
+        <td>
+            <template v-if="file.creator_name">
+                <router-link :to="'/account/'+file.creator">{{ file.creator_name }}</router-link>
+            </template>
+            <template v-else>
+                <i>Deleted Account</i>
+            </template>
+        </td>
+        <td v-if="file.processing">
+            <i>File is processing</i>
+        </td>
+        <td v-else>
+            <a :href="filesRoot+file.id+'/'+$root.urlEncode(file.filename)">Download</a>
+        </td>
+    </tr>
+</template>
+
+<style scoped>
+.file-listing-preview {
+    display: inline-block;
+    background: rgb(19, 19, 19);
+    padding: 10px;
+    margin-top: 20px;
+    margin-right: 20px;
+    border: 2px solid rgb(10, 10, 10);
+    width: 200px;
+    border-radius: 5px;
+    word-wrap: break-word;
+}
+.file-listing-preview img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 120px;
+}
+.file-listing-preview i {
+    font-size: 10px;
+}
+</style>
+
+<script>
+import { filesRoot, thumbsRoot } from '../constants'
+
+export default {
+    name: 'FileListing',
+    props: ['file', 'display'],
+    data() {
+        return {
+            filesRoot,
+            thumbsRoot
+        }
+    }
+}
+</script>
