@@ -70,6 +70,7 @@
   width: 90vw;
   text-align: center;
   overflow-x: hidden;
+  height: 350px;
 }
 </style>
 
