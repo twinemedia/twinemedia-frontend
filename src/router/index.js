@@ -58,7 +58,7 @@ const routes = [
     }
   },
   {
-    path: '/files/tags/',
+    path: '/search/tags/',
     name: 'tag-search',
     component: () => import(/* webpackChunkName: "tag-search" */ '../views/TagSearch.vue'),
     meta: {
@@ -66,7 +66,7 @@ const routes = [
     }
   },
   {
-    path: '/files/tags/:tags/:page',
+    path: '/search/tags/:tags/:page',
     name: 'tag-search-paginated',
     component: () => import(/* webpackChunkName: "tag-search-paginated" */ '../views/TagSearch.vue'),
     meta: {
@@ -179,10 +179,34 @@ const routes = [
   },
   {
     path: '/lists/:term/:page',
-    name: 'lists-search',
+    name: 'lists-search-paginated',
     component: () => import(/* webpackChunkName: "lists-paginated" */ '../views/Lists.vue'),
     meta: {
       title: "Lists | "+appName
+    }
+  },
+  {
+    path: '/list/:id',
+    name: 'list',
+    component: () => import(/* webpackChunkName: "list" */ '../views/List.vue'),
+    meta: {
+      title: "View List | "+appName
+    }
+  },
+  {
+    path: '/list/:id/edit',
+    name: 'edit-list',
+    component: () => import(/* webpackChunkName: "list-edit" */ '../views/EditList.vue'),
+    meta: {
+      title: "Edit List | "+appName
+    }
+  },
+  {
+    path: '/list/:id/:page',
+    name: 'list-paginated',
+    component: () => import(/* webpackChunkName: "list-paginated" */ '../views/List.vue'),
+    meta: {
+      title: "View List | "+appName
     }
   },
   {
@@ -222,6 +246,7 @@ router.beforeEach((to, from, next) => {
             // Set info
             Window.vue.account = acc
             Window.vue.sessionFetched = true
+            Window.vue.authenticated = true
 
             // Connect to websocket
             await connect()
@@ -229,12 +254,15 @@ router.beforeEach((to, from, next) => {
             // Set title
             document.title = to.meta.title
 
-            next()
-            Window.vue.loading = false
+            // Timeout just enough to cause issues
+            setTimeout(() => {
+              next()
+              Window.vue.loading = false
+            }, 100)
           } else {
             // Delete token and redirect to sign in
             localStorage.removeItem('token')
-            document.title = "Sign In | TwineMedia"
+            document.title = 'Sign In | '+appName
             next('/auth')
             Window.vue.loading = false
           }
@@ -246,8 +274,13 @@ router.beforeEach((to, from, next) => {
           console.error(err)
         }
       }
+    } else if(/\/list\/.+/g.test(to.path)) {
+      Window.vue.sessionFetched = true
+      document.title = 'View List | '+appName
+      next()
+      Window.vue.loading = false
     } else {
-      document.title = "Sign In | TwineMedia"
+      document.title = 'Sign In | '+appName
       Window.vue.authTo = to.path
       next('/auth')
       Window.vue.loading = false

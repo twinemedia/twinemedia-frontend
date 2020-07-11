@@ -9,12 +9,12 @@
                     <table>
                         <tr>
                             <td>Name</td>
-                            <td><input placeholder="Name" type="text" v-model="name" /></td>
+                            <td><input maxlength="64" placeholder="Name" type="text" v-model="name" /></td>
                         </tr>
                         <br>
                         <tr>
                             <td>Email</td>
-                            <td><input placeholder="Email" type="text" v-model="email" /></td>
+                            <td><input maxlength="64" placeholder="Email" type="text" v-model="email" /></td>
                         </tr>
                         <br>
                         <tr>
@@ -168,16 +168,16 @@ export default {
                                 this.error = 'Error creating account: '+err
                             }
                         } else {
-                            this.error = "Passwords must match"
+                            this.error = 'Passwords must match'
                         }
                     } else {
-                        this.error = "Passwords must not be blank"
+                        this.error = 'Passwords must not be blank'
                     }
                 } else {
-                    this.error = "Account email must be valid"
+                    this.error = 'Account email must be valid'
                 }
             } else {
-                this.error = "Account name must not be blank"
+                this.error = 'Account name must not be blank'
             }
             this.creating = false
         }

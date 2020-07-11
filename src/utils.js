@@ -10,7 +10,7 @@ export const api = {
 	},
 	hasPermission(permission) {
 		if(Window.vue) {
-			var acc = Window.vue.account
+			var acc = Window.vue.account || { permissions: [] }
 			var has = false
 			
 			// Overrride permission check if the account has admin privileges, or has that exact permission
@@ -90,3 +90,6 @@ export const api = {
 		return await resp.json()
 	}
 };
+export function sleep(ms) {
+	return new Promise((res) => setTimeout(res, ms))
+}

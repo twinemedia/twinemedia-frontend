@@ -1,11 +1,22 @@
 <template>
-    <div class="create-list">
-        <center v-if="$root.hasPermission('lists.create')">
-            <h1>Create List</h1>
+    <div class="create-list" v-if="$root.hasPermission('lists.edit')">
+        <center v-if="loading" class="status">
+            <img src="../assets/logo.png" class="logo"/>
+            <br>
+            <p>Loading list...</p>
+        </center>
+        <center v-else-if="error" class="status">
+            <img src="../assets/logo-404.png" class="logo"/>
+            <br>
+            <h2>Error occurred</h2>
+            <p>{{ error }}</p>
+        </center>
+        <center v-else>
+            <h1>{{ name }}</h1>
             <br><br>
             <div class="panel">
                 <h2>List Info</h2>
-                <form @submit.prevent="create()">
+                <form @submit.prevent="save()">
                     <table>
                         <tr>
                             <td>Name</td>
@@ -142,27 +153,27 @@
                         </template>
                         <br><br>
                     </table>
-                    <template v-if="error">
+                    <template v-if="saveError">
                         <br><br>
                         <div class="error">
-                            {{ error }}
+                            {{ saveError }}
                         </div>
                     </template>
                     <br><br>
-                    <template v-if="creating">
-                        <input type="submit" disabled value="Creating...">
+                    <template v-if="saving">
+                        <input type="submit" disabled value="Saving...">
                     </template>
                     <template v-else>
-                        <input type="submit" value="Create List">
+                        <input type="submit" value="Save List">
                     </template>
                 </form>
             </div>
         </center>
-        <center v-else>
-            <h1>Insufficient Permissions</h1>
-            <p>You are lacking permission to create lists. (Lacking <code>lists.create</code> permission)</p>
-        </center>
     </div>
+    <center v-else>
+        <h1>Insufficient Permissions</h1>
+        <p>You are lacking permission to edit lists. (Lacking <code>lists.edit</code> permission)</p>
+    </center>
 </template>
 
 <style scoped>
@@ -191,6 +202,13 @@ input[type="number"] {
     border: none;
     width: 34px;
 }
+center.status {
+    margin-top: 30vh;
+}
+
+.logo {
+    width: 180px;
+}
 
 @media only screen and (max-width: 939px) {
     .panel {
@@ -206,12 +224,20 @@ import { apiRoot } from '../constants'
 import TagInput from '../components/TagInput'
 
 export default {
-    name: 'CreateList',
+    name: 'EditList',
     components: {
         'tag-input': TagInput
     },
+    mounted() {
+        this.init()
+    },
+    beforeRouteUpdate(to, from, next) {
+        next()
+        this.init()
+    },
     data() {
         return {
+            list: {},
             name: '',
             description: '',
             visibility: 0,
@@ -238,14 +264,70 @@ export default {
                 specific: 'false',
                 mime: '*'
             },
-            creating: false,
-            error: null
+            loading: true,
+            saving: false,
+            error: null,
+            saveError: null
         }
     },
     methods: {
-        async create() {
-            this.creating = true
-            this.error = null
+        async init() {
+            var id = this.$route.params.id
+
+            try {
+                var resp = await api.get(apiRoot+'list/'+id)
+
+                if(resp.status == 'success')
+                    this.list = resp
+                else if(resp.status == 'error')
+                    this.error = 'API returned error: '+resp.error
+                else
+                    this.error = 'API returned unknown status "'+resp.status+'"'
+
+                // Set data from fetched list
+                this.name = resp.name
+                this.description = resp.description || ''
+                this.visibility = resp.visibility
+                this.type = resp.type
+                if(resp.source_tags)
+                    this.sourceTags = resp.source_tags.join(' ')
+                if(resp.source_exclude_tags)
+                    this.sourceExcludeTags = resp.source_exclude_tags.join(' ')
+                if(resp.source_mime != null) {
+                    this.mime.specific = true
+                    this.mime.mime = resp.source_mime
+                }
+                if(resp.source_created_before != null) {
+                    this.sourceCreatedBefore.specific = true
+
+                    let date = new Date(Date.parse(resp.source_created_before))
+                    this.sourceCreatedBefore.minute = date.getMinutes()
+                    this.sourceCreatedBefore.hour = date.getHours()
+                    this.sourceCreatedBefore.day = date.getDate()
+                    this.sourceCreatedBefore.month = date.getMonth()
+                    this.sourceCreatedBefore.year = date.getFullYear()
+                }
+                if(resp.source_created_after != null) {
+                    this.sourceCreatedAfter.specific = true
+
+                    let date = new Date(Date.parse(resp.source_created_after))
+                    this.sourceCreatedAfter.minute = date.getMinutes()
+                    this.sourceCreatedAfter.hour = date.getHours()
+                    this.sourceCreatedAfter.day = date.getDate()
+                    this.sourceCreatedAfter.month = date.getMonth()
+                    this.sourceCreatedAfter.year = date.getFullYear()
+                }
+
+                this.loading = false
+            } catch(err) {
+                this.error = err
+            }
+        },
+        async save() {
+            var id = this.$route.params.id
+
+            this.saving = true
+            this.saveError = null
 
             // Setup date
             var beforeDate;
@@ -262,9 +344,8 @@ export default {
                     afterDate.setSeconds(0)
                 }
             } catch(err) {
-                alert(err)
-                this.error = 'Invalid date'
-                this.creating = false
+                this.saveError = 'Invalid date'
+                this.saving = false
                 return
             }
 
@@ -278,13 +359,13 @@ export default {
 
                 if(this.type == 1) {
                     if(this.mime.specific && this.mime.mime.trim().length < 1) {
-                        this.error = 'MIME type must not be blank'
-                        this.creating = false
+                        this.saveError = 'MIME type must not be blank'
+                        this.saving = false
                         return
                     }
                     if((this.sourceCreatedBefore.specific == 'true' && this.sourceCreatedAfter.specific == 'true') && afterDate.getTime() < beforeDate.getTime()) {
-                        this.error = 'Source created before time cannot be after the source created after time'
-                        this.creating = false
+                        this.saveError = 'Source created before time cannot be after the source created after time'
+                        this.saving = false
                         return
                     }
                 }
@@ -292,12 +373,20 @@ export default {
                 // Add parameters
                 if(this.description.trim().length > 0)
                     params.description = this.description.trim()
-                if(this.mime.specific == 'true')
+                else
+                    ''
+                if(this.mime.specific == true || this.mime.specific == 'true')
                     params.sourceMime = this.mime.mime.trim()
-                if(this.sourceCreatedBefore.specific == 'true')
+                else
+                    params.sourceMime = ''
+                if(this.sourceCreatedBefore.specific == true || this.sourceCreatedBefore.specific == 'true')
                     params.sourceCreatedBefore = beforeDate.toISOString()
-                if(this.sourceCreatedAfter.specific == 'true')
+                else
+                    params.sourceCreatedBefore = ''
+                if(this.sourceCreatedAfter.specific == true || this.sourceCreatedAfter.specific == 'true')
                     params.sourceCreatedAfter = afterDate.toISOString()
+                else
+                    params.sourceCreatedAfter = ''
                 
                 var tags = []
                 // Enumerate tags
@@ -317,17 +406,17 @@ export default {
                 if(excludeTags.length > 0)
                     params.sourceExcludeTags = JSON.stringify(excludeTags)
 
-                var resp = await api.post(apiRoot+'lists/create', params)
+                var resp = await api.post(apiRoot+'list/'+id+'/edit', params)
                 if(resp.status == 'success')
-                    this.$router.push('/list/'+resp.id)
+                    this.$router.push('/list/'+id)
                 else if(resp.status == 'error')
-                    this.error = 'API returned error: '+resp.error
+                    this.saveError = 'API returned error: '+resp.error
                 else
-                    this.error = 'API returned unknown status "'+resp.status+'"'
+                    this.saveError = 'API returned unknown status "'+resp.status+'"'
             } else {
-                this.error = 'List name must not be blank'
+                this.saveError = 'List name must not be blank'
             }
-            this.creating = false
+            this.saving = false
         }
     }
 }

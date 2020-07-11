@@ -77,7 +77,7 @@
                     </p>
                     <template v-if="displayType == 1">
                         <template v-for="file in files">
-                            <file-listing v-bind:key="file" :file="file" display="preview" />
+                            <file-listing :key="file.id" :file="file" display="preview" addable="true" />
                         </template>
                     </template>
                     <template v-else>
@@ -91,7 +91,7 @@
                                 <th>File Link</th>
                             </tr>
                             <template v-for="file in files">
-                                <file-listing v-bind:key="file" :file="file" display="table" />
+                                <file-listing :key="file.id" :file="file" display="table" addable="true" />
                             </template>
                         </table>
                     </template>
@@ -144,7 +144,7 @@ table {
 
 <script>
 import { apiRoot } from '../constants'
-import { api } from '../utils'
+import { api, sleep } from '../utils'
 import FileListing from '../components/FileListing.vue'
 
 export default {
@@ -183,8 +183,13 @@ export default {
         next()
         this.init()
     },
+    beforeRouteLeave(to, from, next) {
+        next()
+        this.init()
+    },
     methods: {
         async init() {
+            await sleep(10)
             if(this.$route.params.term) {
                 this.currentPage = (this.$route.params.page*1)-1
                 this.searchTerm = decodeURIComponent(this.$route.params.term)
@@ -204,8 +209,8 @@ export default {
                 try {
                     var res = await api.get(apiRoot+'media/search', {
                         query: this.searchTerm,
-                        offset: this.currentPage*50,
-                        limit: (this.currentPage*50)+50,
+                        offset: this.currentPage*50 || 0,
+                        limit: 50,
                         order: this.order,
                         mime: this.mime.replace(/\*/g, '%'),
                         searchNames: this.searchItems.name,

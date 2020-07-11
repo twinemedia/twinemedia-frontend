@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input ref="tags" :placeholder="placeholder" :value="value" type="text" @input="updateValue()" @focus="focus" @blur="blur" v-on:keyup.38="selectUp" v-on:keyup.40="selectDown" @keyup="checkCursor()" @keydown.enter="insertTag($event)" />
+        <input ref="tags" :placeholder="placeholder" :value="value" type="text" @input="updateValue()" @focus="focus" @blur="blur" v-on:keydown.38="selectUp" v-on:keydown.40="selectDown" @keyup="checkCursor()" @keydown.enter="insertTag($event)" @keydown.space="insertTag($event)" @keydown.tab="insertTag($event, true)">
         <div class="tag-chooser" :style="{ display: (tags.length > 0) ? 'block' : 'none' }">
             <template v-for="(tag, index) in tags">
                 <span v-bind:key="index" @mouseenter="selected = index" @mouseleave="selected = -1" @mousedown="insertTag($event)" :class="[selected == index ? 'tag-selected' : 'tag-unselected']">{{ tag.name }}</span>
@@ -64,11 +64,15 @@ export default {
             }
         },
         async displayTags() {
-            // Check if required permission is available
-            if(this.$root.hasPermission('tags.list')) {
-                // Fetch tag that is currently being typed
-                var tags = this.$refs.tags.value.split(' ')
-                var tag = tags[tags.length-1]
+            // Fetch tag that is currently being typed
+            var tags = this.$refs.tags.value.split(' ')
+            var tag = tags[tags.length-1]
+
+            // Check if required permission is available and this isn't just a single dash
+            if(this.$root.hasPermission('tags.list') && tag != '-') {
+                // Remove dash from beginning of tags when searching
+                if(tag.startsWith('-'))
+                    tag = tag.substring(1)
 
                 try {
                     var res = await api.get(apiRoot+'tags', {
@@ -88,18 +92,22 @@ export default {
                 }
             }
         },
-        insertTag(event) {
+        insertTag(e, tab) {
+            if(tab && this.selected < 0 && this.tags.length > 0)
+                this.selected = 0
+            
             if(this.selected > -1) {
-                event.preventDefault()
+                e.preventDefault()
                 var tag = this.tags[this.selected].name
 
                 // Collect params
                 var str = this.$refs.tags.value
                 var tags = this.$refs.tags.value.split(' ')
                 var lastTag = tags[tags.length-1]
+                var dash = lastTag.startsWith('-')
 
                 // Insert and emit value
-                this.$refs.tags.value = str.substring(0, str.length-lastTag.length)+tag+' '
+                this.$refs.tags.value = str.substring(0, str.length-lastTag.length)+(dash ? '-' : '')+tag+' '
                 this.$emit('input', this.$refs.tags.value)
                 this.ignoreNextEvent = true
                 this.selected = -1
@@ -124,13 +132,17 @@ export default {
                 }
             }
         },
-        selectUp() {
-            if(this.selected > -1)
+        selectUp(e) {
+            if(this.selected > -1) {
+                e.preventDefault()
                 this.selected--
+            }
         },
-        selectDown() {
-            if(this.selected < this.tags.length-1)
+        selectDown(e) {
+            if(this.selected < this.tags.length-1) {
+                e.preventDefault()
                 this.selected++
+            }
         },
         focus() {
             var pos = this.$refs.tags.selectionEnd

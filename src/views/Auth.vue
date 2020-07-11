@@ -66,6 +66,7 @@ export default {
                         // Set info
                         Window.vue.account = info
                         Window.vue.sessionFetched = true
+                        Window.vue.authenticated = true
 
                         // Connect to websocket
                         await connect()

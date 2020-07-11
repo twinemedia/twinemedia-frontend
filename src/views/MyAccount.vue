@@ -125,6 +125,7 @@ export default {
                         if(resp.status == 'success') {
                             Window.vue.account.name = this.name
                             Window.vue.account.email = this.email
+                            this.error = null
                             this.$router.push('/')
                         } else if(resp.status == 'error') {
                             this.error = 'API returned error: '+resp.error

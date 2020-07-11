@@ -42,7 +42,7 @@
                             <th>Tag</th>
                         </tr>
                         <template v-for="tag in tags">
-                            <tr v-bind:key="tag">
+                            <tr :key="tag.name">
                                 <td><router-link :to="'/files/tags/'+tag.name+'/1'">{{ tag.name }}</router-link></td>
                             </tr>
                         </template>
@@ -126,7 +126,7 @@ table {
 
 <script>
 import { apiRoot } from '../constants'
-import { api } from '../utils'
+import { api, sleep } from '../utils'
 
 export default {
     name: 'Tags',
@@ -148,8 +148,13 @@ export default {
         next()
         this.init()
     },
+    beforeRouteLeave(to, from, next) {
+        next()
+        this.init()
+    },
     methods: {
         async init() {
+            await sleep(10)
             if(this.$route.params.term) {
                 this.currentPage = (this.$route.params.page*1)-1
                 this.term = decodeURIComponent(this.$route.params.term)
@@ -169,7 +174,7 @@ export default {
                 try {
                     var res = await api.get(apiRoot+'tags', {
                         query: this.term.replace(/\*/g, '%'),
-                        offset: this.currentPage*50,
+                        offset: this.currentPage*50 || 0,
                         limit: 50,
                         order: this.order
                     })

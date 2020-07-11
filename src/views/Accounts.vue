@@ -50,7 +50,7 @@
                             <th>Administrator</th>
                             <th>Creation Date</th>
                         </tr>
-                        <tr v-for="account in accounts" v-bind:key="account">
+                        <tr v-for="account in accounts" :key="account.id">
                             <td>
                                 <router-link :to="'/account/'+account.id">{{ account.name }}</router-link>
                             </td>

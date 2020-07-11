@@ -4,7 +4,7 @@
             <h1>Search Files By Tags</h1>
             <br>
             <form @submit.prevent="search()">
-                <tag-input class="input" type="text" v-model="tags" placeholder="Search files with tags (e.g. 'tag_one tag_two')"/> <input type="submit" value="Search" />
+                <tag-input class="input" type="text" v-model="tags" placeholder="Search files with tags (e.g. 'tag_one tag_two -excluded_tag')"/> <input type="submit" value="Search" />
                 <div class="options-container">
                     <span class="options-label" @click="optionsShown = !optionsShown">{{ optionsShown ? "Hide Search Options" : "Show Search Options" }}</span>
                     <div class="options" v-if="optionsShown">
@@ -56,7 +56,7 @@
                     </p>
                     <template v-if="displayType == 1">
                         <template v-for="file in files">
-                            <file-listing v-bind:key="file" :file="file" display="preview" />
+                            <file-listing :key="file.id" :file="file" display="preview" addable="true" />
                         </template>
                     </template>
                     <template v-else>
@@ -70,7 +70,7 @@
                                 <th>File Link</th>
                             </tr>
                             <template v-for="file in files">
-                                <file-listing v-bind:key="file" :file="file" display="table" />
+                                <file-listing :key="file.id" :file="file" display="table" addable="true" />
                             </template>
                         </table>
                     </template>
@@ -123,7 +123,7 @@ table {
 
 <script>
 import { apiRoot } from '../constants'
-import { api } from '../utils'
+import { api, sleep } from '../utils'
 import FileListing from '../components/FileListing'
 import TagInput from '../components/TagInput'
 
@@ -159,8 +159,13 @@ export default {
         next()
         this.init()
     },
+    beforeRouteLeave(to, from, next) {
+        next()
+        this.init()
+    },
     methods: {
         async init() {
+            await sleep(10)
             if(this.$route.params.tags) {
                 this.currentPage = (this.$route.params.page*1)-1
                 this.currentTags = this.$route.params.tags.split('+')
@@ -179,11 +184,23 @@ export default {
             if(!this.loading) {
                 this.loading = true
                 this.error = null
+
+                // Separate excluded tags and normal tags
+                var tags = []
+                var exclude = []
+                this.currentTags.forEach(tag => {
+                    if(tag.startsWith('-'))
+                        exclude.push(tag.substring(1))
+                    else
+                        tags.push(tag)
+                })
+
                 try {
                     var res = await api.get(apiRoot+'media/tags', {
-                        tags: JSON.stringify(this.currentTags),
-                        offset: this.currentPage*50,
-                        limit: (this.currentPage*50)+50,
+                        tags: JSON.stringify(tags),
+                        excludeTags: JSON.stringify(exclude),
+                        offset: this.currentPage*50 || 0,
+                        limit: 50,
                         order: this.order,
                         mime: this.mime.replace(/\*/g, '%')
                     })
@@ -217,27 +234,27 @@ export default {
                 this.currentTags = this.processTags()
                 this.$route.params.tags = this.currentTags.join('+')
 
-                this.$router.push('/files/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
+                this.$router.push('/search/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
                 this.fetchFiles()
             } else {
                 this.currentPage = 0
                 this.currentTags = []
 
-                this.$router.push('/files/tags/')
+                this.$router.push('/search/tags/')
                 this.fetchFiles()
             }
         },
         async lastPage() {
             this.currentPage--
             if(this.$route.params.tags)
-                this.$router.push('/files/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
+                this.$router.push('/search/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
             else
                 await this.fetchFiles()
         },
         async nextPage() {
             this.currentPage++
             if(this.$route.params.tags)
-                this.$router.push('/files/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
+                this.$router.push('/search/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
             else
                 await this.fetchFiles()
         }

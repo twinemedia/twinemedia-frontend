@@ -6,7 +6,7 @@
                 <h2>Drop files here</h2>
             </center>
         </div>
-        <div id="progress-area" :key='i'>
+        <div id="progress-area" :key="i">
             <template v-for="id in Object.keys(uploads).reverse()">
                 <upload :key="id" :upload='uploads[id]'/>
             </template>

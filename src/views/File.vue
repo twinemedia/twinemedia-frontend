@@ -181,6 +181,7 @@
                             </tr>
                         </table>
                         <button v-if="$root.hasPermission('files.edit')" @click="editing = true">Edit File Info</button>
+                        <button v-if="$root.hasPermission('lists.add') || $root.hasPermission('lists.remove')" @click="$root.openListAddDialog(file.id)">Add/Remove To List</button>
                         <template v-if="$root.hasPermission('files.delete')">
                             <button v-if="deleting" disabled>Deleting...</button>
                             <button v-else @click="deleteFile()">Delete File</button>
@@ -295,6 +296,9 @@ table textarea {
 }
 button {
     margin-right: 8px;
+}
+input[type="text"] {
+    width: 100%;
 }
 
 @media only screen and (max-width: 939px) {
@@ -414,17 +418,17 @@ export default {
             }
         },
         async save() {
-            this.saving = true;
-            this.error = false;
+            this.saving = true
+            this.error = false
             var id = this.$route.params.file
 
             try {
                 var params = {}
 
                 // Only include params that are not blank/null
-                if(this.edits.name && this.edits.name.trim().length > 0)
+                if(this.edits.name != null)
                     params.name = this.edits.name.trim()
-                if(this.edits.description && this.edits.description.trim().length > 0)
+                if(this.edits.description != null)
                     params.description = this.edits.description.trim()
 
                 // Collect tags
@@ -453,7 +457,7 @@ export default {
                     this.saving = false
                     this.editing = false
                 } else if(resp.status == 'error') {
-                    this.saveError = resp.error;
+                    this.saveError = resp.error
                     this.saving = false
                 } else {
                     this.saveError = 'API returned unknown status "'+resp.status+'"'
@@ -465,7 +469,7 @@ export default {
             }
         },
         async deleteFile() {
-            this.deleting = true;
+            this.deleting = true
             var id = this.$route.params.file
 
             if(confirm('Are you absolutely sure you want to delete this file? This action cannot be undone!')) {
@@ -487,7 +491,7 @@ export default {
                 }
             }
 
-            this.deleting = false;
+            this.deleting = false
         },
         async createChildFile() {
             if(!this.creatingChild) {

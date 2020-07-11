@@ -6,24 +6,28 @@
     </div>
     <div v-else-if="display == 'preview'" class="file-listing file-listing-preview">
         <router-link :to="'/file/'+file.id">
-            <img v-if="file.thumbnail" :src="thumbsRoot+file.id" height="120" />
+            <img v-if="file.thumbnail" :src="thumbsRoot+file.id" :title="file.name || file.filename" height="120" />
             <img v-else src="../assets/files.png" height="120" />
             <br>
-            <b>{{ $root.limit(file.name || file.filename, 50) }}</b>
+            <b :title="file.name || file.filename">{{ $root.limit(file.name || file.filename, 50) }}</b>
             <br>
-            <i>({{ $root.limit(file.filename, 50) }})</i>
+            <i :title="file.filename">({{ $root.limit(file.filename, 50) }})</i>
         </router-link>
         <p><a :href="filesRoot+file.id+'/'+$root.urlEncode(file.filename)">Download</a></p>
+        <template v-if="addable && ($root.hasPermission('lists.add') || $root.hasPermission('lists.remove'))">
+            <a href="" @click.prevent="$root.openListAddDialog(file.id)">Add/remove to list</a>
+        </template>
+        <slot></slot>
     </div>
     <tr v-else class="file-listing">
         <td>
             <router-link :to="'/file/'+file.id">
-                <template v-if="file.name">{{ $root.limit(file.name, 50) }}</template>
+                <template v-if="file.name" :title="file.name">{{ $root.limit(file.name, 50) }}</template>
                 <i v-else>Same as filename</i>
             </router-link>
         </td>
         <td>
-            <router-link :to="'/file/'+file.id">
+            <router-link :to="'/file/'+file.id" :title="file.filename">
                 {{ $root.limit(file.filename, 50) }}
             </router-link>
         </td>
@@ -51,6 +55,7 @@
         <td v-else>
             <a :href="filesRoot+file.id+'/'+$root.urlEncode(file.filename)">Download</a>
         </td>
+        <slot></slot>
     </tr>
 </template>
 
@@ -82,7 +87,7 @@ import { filesRoot, thumbsRoot } from '../constants'
 
 export default {
     name: 'FileListing',
-    props: ['file', 'display'],
+    props: ['file', 'display', 'addable'],
     data() {
         return {
             filesRoot,

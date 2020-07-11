@@ -38,74 +38,81 @@
                         </div>
                     </div>
                 </div>
-                <br><br>
-                <div class="results">
-                    <template v-if="error">
-                        <h2>Error Ocurred</h2>
-                        <p>{{ error }}</p>
-                    </template>
-                    <template v-else-if="loading">
-                        <h2>Loading Lists</h2>
-                        <p>Loading...</p>
-                    </template>
-                    <template v-else-if="lists.length > 0">
-                        <p>
-                            <button v-if="currentPage > 0" @click="lastPage()">&lt;</button>
-                            <button v-else disabled>&lt;</button>
-                            Page {{ currentPage+1 }}
-                            <button v-if="lists.length >= 50" @click="nextPage()">&gt;</button>
-                            <button v-else disabled>&gt;</button>
-                        </p>
-                        <table class="table" :key="update">
-                            <tr>
-                                <th>Name</th>
-                                <th>Creator</th>
-                                <th>Type</th>
-                                <td>Item Count</td>
-                                <th>Created On</th>
-                                <th>Action</th>
-                            </tr>
-                            <tr v-for="list in lists" v-bind:key="list.id">
-                                <td>
-                                    <router-link :to="'/list/'+list.id">{{ list.name }}</router-link>
-                                </td>
-                                <td>
-                                    <template v-if="list.creator_name">
-                                        <router-link :to="'/account/'+list.creator">{{ list.creator_name }}</router-link>
+            </form>
+            <br><br>
+            <div class="results">
+                <template v-if="error">
+                    <h2>Error Ocurred</h2>
+                    <p>{{ error }}</p>
+                </template>
+                <template v-else-if="loading">
+                    <h2>Loading Lists</h2>
+                    <p>Loading...</p>
+                </template>
+                <template v-else-if="lists.length > 0">
+                    <p>
+                        <button v-if="currentPage > 0" @click="lastPage()">&lt;</button>
+                        <button v-else disabled>&lt;</button>
+                        Page {{ currentPage+1 }}
+                        <button v-if="lists.length >= 50" @click="nextPage()">&gt;</button>
+                        <button v-else disabled>&gt;</button>
+                    </p>
+                    <table class="table" :key="update">
+                        <tr>
+                            <th>Name</th>
+                            <th>Creator</th>
+                            <th>Type</th>
+                            <td>Item Count</td>
+                            <td>Visibility</td>
+                            <th>Created On</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr v-for="list in lists" :key="list.id">
+                            <td>
+                                <router-link :to="'/list/'+list.id">{{ list.name }}</router-link>
+                            </td>
+                            <td>
+                                <template v-if="list.creator_name">
+                                    <router-link :to="'/account/'+list.creator">{{ list.creator_name }}</router-link>
+                                </template>
+                                <template v-else>
+                                    <i>Deleted Account</i>
+                                </template>
+                            </td>
+                            <td>{{ listTypes[list.type] }}</td>
+                            <td>
+                                <template v-if="list.type == 0">{{ list.item_count }}</template>
+                                <template v-else>Variable</template>
+                            </td>
+                            <td>{{ listVisibilities[list.visibility] }}</td>
+                            <td>{{ list.created_on }}</td>
+                            <td>
+                                <template v-if="$root.hasPermission('lists.edit') || $root.hasPermission('lists.delete')">
+                                    <template v-if="$root.hasPermission('lists.edit')">
+                                        <router-link :to="'/list/'+list.id+'/edit'"><button class="list-edit">Edit</button></router-link>
                                     </template>
-                                    <template v-else>
-                                        <i>Deleted Account</i>
-                                    </template>
-                                </td>
-                                <td>{{ listTypes[list.type] }}</td>
-                                <td>
-                                    <template v-if="list.type == 0">{{ list.item_count }}</template>
-                                    <template v-else>Variable</template>
-                                </td>
-                                <td>{{ list.created_on }}</td>
-                                <td>
                                     <template v-if="$root.hasPermission('lists.delete')">
                                         <button class="list-delete" v-if="deleting[list.id]" disabled>Deleting...</button>
                                         <button class="list-delete" v-else @click="deleteList(list.id)">Delete</button>
                                     </template>
-                                    <i v-else>None</i>
-                                </td>
-                            </tr>
-                        </table>
-                        <p>
-                            <button v-if="currentPage > 0" @click="lastPage()">&lt;</button>
-                            <button v-else disabled>&lt;</button>
-                            Page {{ currentPage+1 }}
-                            <button v-if="lists.length >= 50" @click="nextPage()">&gt;</button>
-                            <button v-else disabled>&gt;</button>
-                        </p>
-                    </template>
-                    <template v-else>
-                        <h2>No Lists</h2>
-                        <p>How about <router-link to="/lists/create">creating</router-link> one?</p>
-                    </template>
-                </div>
-            </form>
+                                </template>
+                                <i v-else>None</i>
+                            </td>
+                        </tr>
+                    </table>
+                    <p>
+                        <button v-if="currentPage > 0" @click="lastPage()">&lt;</button>
+                        <button v-else disabled>&lt;</button>
+                        Page {{ currentPage+1 }}
+                        <button v-if="lists.length >= 50" @click="nextPage()">&gt;</button>
+                        <button v-else disabled>&gt;</button>
+                    </p>
+                </template>
+                <template v-else>
+                    <h2>No Lists</h2>
+                    <p>How about <router-link to="/lists/create">creating</router-link> one?</p>
+                </template>
+            </div>
         </center>
         <center v-else>
             <h1>Insufficient Permissions</h1>
@@ -138,17 +145,22 @@ input[type="submit"] {
 table {
     width: 100%;
 }
+
+.list-edit {
+    margin-right: 10px;
+}
 </style>
 
 <script>
 import { api } from '../utils'
-import { apiRoot, listTypes } from '../constants'
+import { apiRoot, listTypes, listVisibilities } from '../constants'
 
 export default {
     name: 'Lists',
     data() {
         return {
             listTypes,
+            listVisibilities,
             error: null,
             loading: false,
             order: '0',
@@ -173,12 +185,14 @@ export default {
     },
     methods: {
         async init() {
-            if(this.$route.params.page) {
+            if(this.$route.params.term) {
                 this.currentPage = (this.$route.params.page*1)-1
+                this.searchTerm = decodeURIComponent(this.$route.params.term)
 
                 await this.fetchLists()
             } else {
                 this.currentPage = 0
+                this.searchTerm = ''
 
                 await this.fetchLists()
             }
@@ -227,28 +241,30 @@ export default {
             }
         },
         async deleteList(id) {
-            try {
-                this.update = Math.random()
-                this.deleting[id] = true
-                var res = await api.post(apiRoot+'list/'+id+'/delete')
+            if(confirm('Are you absolutely sure you want to delete this list? This action cannot be undone!')) {
+                try {
+                    this.update = Math.random()
+                    this.deleting[id] = true
+                    var res = await api.post(apiRoot+'list/'+id+'/delete')
 
-                if(res.status == 'success') {
-                    // Remove list
-                    for(let i = 0; i < this.lists.length; i++)
-                        if(this.lists[i].id == id) {
-                            this.lists.splice(i, 1)
-                            break
-                        }
-                } else if(res.status == 'error') {
-                    this.error = res.error
-                } else {
-                    this.error = 'API returned unknown status "'+this.status+'"'
+                    if(res.status == 'success') {
+                        // Remove list
+                        for(let i = 0; i < this.lists.length; i++)
+                            if(this.lists[i].id == id) {
+                                this.lists.splice(i, 1)
+                                break
+                            }
+                    } else if(res.status == 'error') {
+                        this.error = res.error
+                    } else {
+                        this.error = 'API returned unknown status "'+this.status+'"'
+                    }
+                } catch(err) {
+                    alert("Failed to delete list: "+err)
                 }
-            } catch(err) {
-                alert("Failed to delete list: "+err)
+                this.deleting[id] = false
+                this.update = Math.random()
             }
-            this.deleting[id] = false
-            this.update = Math.random()
         },
         async lastPage() {
             this.currentPage--

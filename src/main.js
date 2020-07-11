@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 
 import { api } from './utils'
+import { appName } from './constants'
 
 Vue.config.productionTip = false
 
@@ -22,10 +23,23 @@ Window.vue = new Vue({
       account: null,
       loading: true,
       error: null,
-      uploads: []
+      uploads: [],
+      authenticated: false,
+      appName: appName,
+      lists: [],
+      listAddFile: null,
+      listsModalVisible: false,
     }
   },
   methods: {
+    openListAddDialog(fileId) {
+      this.listAddFile = fileId
+      this.listsModalVisible = true
+    },
+    closeListAddDialog() {
+      this.listAddFile = null
+      this.listsModalVisible = false
+    },
     hasPermission: api.hasPermission,
     formatSize(size) {
       var fmt = `${size} bytes`
@@ -52,10 +66,12 @@ Window.vue = new Vue({
       return encodeURI(txt)
     },
     limit(txt, length) {
-      if(txt.length > length) {
-        return txt.substring(0, length-3)+'...'
-      } else {
-        return txt
+      if(txt) {
+        if(txt.length > length) {
+          return txt.substring(0, length-3)+'...'
+        } else {
+          return txt
+        }
       }
     },
     alert(data) {

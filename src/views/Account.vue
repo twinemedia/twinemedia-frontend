@@ -235,8 +235,8 @@ export default {
             }
         },
         async save() {
-            this.saving = true;
-            this.error = false;
+            this.saving = true
+            this.error = false
             var id = this.$route.params.id
 
             // Ensure name isn't blank
@@ -281,10 +281,11 @@ export default {
                             this.account.admin = this.edits.admin
                             this.account.permissions = this.edits.permissions.split(' ')
 
+                            this.saveError = null
                             this.saving = false
                             this.editing = false
                         } else if(resp.status == 'error') {
-                            this.saveError = resp.error;
+                            this.saveError = resp.error
                             this.saving = false
                         } else {
                             this.saveError = 'API returned unknown status "'+resp.status+'"'
@@ -304,7 +305,7 @@ export default {
             }
         },
         async deleteAccount() {
-            this.deleting = true;
+            this.deleting = true
             var id = this.$route.params.id
 
             if(confirm('Are you absolutely sure you want to delete this account? This action cannot be undone!')) {
@@ -323,7 +324,7 @@ export default {
                 }
             }
 
-            this.deleting = false;
+            this.deleting = false
         }
     }
 }

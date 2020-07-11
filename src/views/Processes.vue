@@ -37,7 +37,7 @@
                             <th>Format Extension</th>
                             <th>Action</th>
                         </tr>
-                        <tr v-for="process in processes" v-bind:key="process.id">
+                        <tr v-for="process in processes" :key="process.id">
                             <td>
                                 <router-link :to="'/process/'+process.id">{{ process.mime }}</router-link>
                             </td>
