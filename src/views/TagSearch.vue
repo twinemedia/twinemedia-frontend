@@ -234,7 +234,7 @@ export default {
                 this.currentTags = this.processTags()
                 this.$route.params.tags = this.currentTags.join('+')
 
-                this.$router.push('/search/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
+                this.$router.push('/search/tags/'+encodeURIComponent(this.currentTags.join(' '))+'/'+(this.currentPage+1))
                 this.fetchFiles()
             } else {
                 this.currentPage = 0
@@ -247,14 +247,14 @@ export default {
         async lastPage() {
             this.currentPage--
             if(this.$route.params.tags)
-                this.$router.push('/search/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
+                this.$router.push('/search/tags/'+encodeURIComponent(this.currentTags.join(' '))+'/'+(this.currentPage+1))
             else
                 await this.fetchFiles()
         },
         async nextPage() {
             this.currentPage++
             if(this.$route.params.tags)
-                this.$router.push('/search/tags/'+this.currentTags.join('+')+'/'+(this.currentPage+1))
+                this.$router.push('/search/tags/'+encodeURIComponent(this.currentTags.join(' '))+'/'+(this.currentPage+1))
             else
                 await this.fetchFiles()
         }

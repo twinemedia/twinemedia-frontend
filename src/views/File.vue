@@ -163,7 +163,7 @@
                                 <td>Tags</td>
                                 <td>
                                     <template v-if="file.tags.length > 0">
-                                        <router-link class="tag" v-bind:key="tag" :to="'/search/tags/'+tag+'/1'" v-for="tag in file.tags">
+                                        <router-link class="tag" v-bind:key="tag" :to="'/search/tags/'+encodeURIComponent(tag)+'/1'" v-for="tag in file.tags">
                                             {{ tag }}
                                         </router-link>
                                     </template>
@@ -361,6 +361,7 @@ export default {
         this.init()
     },
     methods: {
+        encodeURIComponent,
         async init() {
             var id = this.$route.params.file
 

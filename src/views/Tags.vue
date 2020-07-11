@@ -43,7 +43,7 @@
                         </tr>
                         <template v-for="tag in tags">
                             <tr :key="tag.name">
-                                <td><router-link :to="'/search/tags/'+tag.name+'/1'">{{ tag.name }}</router-link></td>
+                                <td><router-link :to="'/search/tags/'+encodeURIComponent(tag.name)+'/1'">{{ tag.name }}</router-link></td>
                             </tr>
                         </template>
                     </table>
@@ -153,6 +153,7 @@ export default {
         this.init()
     },
     methods: {
+        encodeURIComponent,
         async init() {
             await sleep(10)
             if(this.$route.params.term) {
