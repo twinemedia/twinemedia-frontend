@@ -43,7 +43,7 @@
                         </tr>
                         <template v-for="tag in tags">
                             <tr :key="tag.name">
-                                <td><router-link :to="'/files/tags/'+tag.name+'/1'">{{ tag.name }}</router-link></td>
+                                <td><router-link :to="'/search/tags/'+tag.name+'/1'">{{ tag.name }}</router-link></td>
                             </tr>
                         </template>
                     </table>

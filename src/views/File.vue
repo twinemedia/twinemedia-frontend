@@ -163,7 +163,7 @@
                                 <td>Tags</td>
                                 <td>
                                     <template v-if="file.tags.length > 0">
-                                        <router-link class="tag" v-bind:key="tag" :to="'/files/tags/'+tag+'/1'" v-for="tag in file.tags">
+                                        <router-link class="tag" v-bind:key="tag" :to="'/search/tags/'+tag+'/1'" v-for="tag in file.tags">
                                             {{ tag }}
                                         </router-link>
                                     </template>
@@ -482,7 +482,7 @@ export default {
                         else
                             this.$router.push('/')
                     } else if(resp.status == 'error') {
-                        alert(resp.error)
+                        alert('API returned error: '+resp.error)
                     } else {
                         alert('API returned unknown status: '+resp.status)
                     }

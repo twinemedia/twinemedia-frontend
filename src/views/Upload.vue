@@ -61,7 +61,7 @@ var comp = null
 // Current uploads picked up by websocket
 handler("twinemedia."+api.tokenId(), function(err, msg) {
     if(err) {
-        alert(err)
+        alert('Error occurred while connecting to websocket: '+err)
     } else {
         var json = msg.body
         

@@ -1,5 +1,5 @@
 export const appName = 'TwineMedia'
-export const filesRoot = '/file/'
+export const filesRoot = '/download/'
 export const thumbsRoot = '/thumbnail/'
 export const apiRoot = '/api/v1/'
 export const eventBusUrl = '/eventbus'

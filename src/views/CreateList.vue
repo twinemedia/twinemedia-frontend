@@ -262,7 +262,7 @@ export default {
                     afterDate.setSeconds(0)
                 }
             } catch(err) {
-                alert(err)
+                alert('Error occurred: '+err)
                 this.error = 'Invalid date'
                 this.creating = false
                 return

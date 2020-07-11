@@ -315,7 +315,7 @@ export default {
                         // Send to dashboard
                         this.$router.push('/accounts')
                     } else if(resp.status == 'error') {
-                        alert(resp.error)
+                        alert('API returned error: '+resp.error)
                     } else {
                         alert('API returned unknown status: '+resp.status)
                     }

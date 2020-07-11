@@ -273,7 +273,7 @@ export default {
                         // Send to back to lists
                         this.$router.push('/lists')
                     } else if(resp.status == 'error') {
-                        alert(resp.error)
+                        alert('API returned error: '+resp.error)
                     } else {
                         alert('API returned unknown status: '+resp.status)
                     }
