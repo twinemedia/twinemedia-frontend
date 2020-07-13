@@ -445,6 +445,8 @@ export default {
 
                     this.edits.tags = params.tags.join(' ')
                     params.tags = JSON.stringify(params.tags)
+                } else {
+                    params.tags = '[]'
                 }
 
                 // Send edit POST
