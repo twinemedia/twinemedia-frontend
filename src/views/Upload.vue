@@ -20,6 +20,7 @@
 
 <style scoped>
 #upload-area {
+    margin-top: 60px;
     border: 3px dashed #3e8036;
     border-radius: 10px;
     width: 100%;
