@@ -8,7 +8,10 @@
         </div>
         <div id="progress-area" :key="i">
             <template v-for="id in Object.keys(uploads).reverse()">
-                <upload :key="id" :upload='uploads[id]'/>
+                <div v-if="uploads[id].id" :key="id">
+                    <upload   :upload="uploads[id]" :id="uploads[id].id"/>
+                </div>
+                <upload v-else :key="id" :upload="uploads[id]"/>
             </template>
         </div>
     </div>
