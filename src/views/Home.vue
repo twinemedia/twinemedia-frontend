@@ -12,6 +12,8 @@
       <router-link to="/account/self">Manage my account</router-link>
       <br>
       <template v-if="$root.hasPermission('files.list')">
+        <router-link to="/search">Browse files</router-link>
+        <br>
         <router-link to="/search">Search files</router-link>
         <br>
         <router-link to="/search/tags">Search files by tags</router-link>
