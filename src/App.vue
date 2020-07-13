@@ -95,7 +95,7 @@ center {
 body {
   background: #1c1c1c;
   color: white;
-  font-family: sans;
+  font-family: sans-serif;
   margin-top: 50px;
 }
 a {
