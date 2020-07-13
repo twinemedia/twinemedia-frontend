@@ -139,6 +139,8 @@ export default {
                     this.error = 'API returned unknown status "'+resp.status+'"'
                 }
 
+                this.updateMime()
+
                 this.loading = false
             } catch(err) {
                 this.error = err
