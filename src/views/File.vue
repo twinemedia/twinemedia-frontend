@@ -318,11 +318,12 @@ input[type="text"] {
 <script>
 import { api } from '../utils'
 import { apiRoot, filesRoot, thumbsRoot } from '../constants'
+import { handler, removeHandler } from '../websocket'
+
 import FileListing from '../components/FileListing'
 import TagInput from '../components/TagInput'
 import MediaSettingsChooser from '../components/MediaSettingsEditor'
 import ProgressBar from '../components/ProgressBar'
-import { handler, removeHandler } from '../websocket'
 
 export default {
     name: 'File',
