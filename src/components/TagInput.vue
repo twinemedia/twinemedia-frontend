@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input ref="tags" :placeholder="placeholder" :value="value" type="text" @input="updateValue()" @focus="focus" @blur="blur" v-on:keydown.38="selectUp" v-on:keydown.40="selectDown" @keyup="checkCursor()" @keydown.enter="insertTag($event)" @keydown.space="insertTag($event)" @keydown.tab="insertTag($event, true)">
+        <input ref="tags" :placeholder="placeholder" :disabled="disabled" :value="value" type="text" @input="updateValue()" @focus="focus" @blur="blur" v-on:keydown.38="selectUp" v-on:keydown.40="selectDown" @keyup="checkCursor()" @keydown.enter="insertTag($event)" @keydown.space="insertTag($event)" @keydown.tab="insertTag($event, true)">
         <div class="tag-chooser" :style="{ display: (tags.length > 0) ? 'block' : 'none' }">
             <template v-for="(tag, index) in tags">
                 <span v-bind:key="index" @mouseenter="selected = index" @mouseleave="selected = -1" @mousedown="insertTag($event)" :class="[selected == index ? 'tag-selected' : 'tag-unselected']">{{ tag.name }}</span>
@@ -40,7 +40,7 @@ import { apiRoot } from '../constants'
 
 export default {
     name: 'TagInput',
-    props: ['value', 'placeholder'],
+    props: ['value', 'placeholder', 'disabled'],
     data() {
         return {
             tags: [],
