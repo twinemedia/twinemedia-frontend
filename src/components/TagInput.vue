@@ -79,7 +79,7 @@ export default {
                         query: '%'+tag+'%',
                         offset: 0,
                         limit: 5,
-                        order: 0
+                        order: 2
                     })
 
                     if(res.status == 'success') {

@@ -14,6 +14,8 @@
                             <select @change="search()" v-model="order">
                                 <option value="0">Alphabetically, ascending</option>
                                 <option value="1">Alphabetically, descending</option>
+                                <option value="2">Tag length, ascending</option>
+                                <option value="3">Tag length, descending</option>
                             </select>
                         </div>
                     </div>
