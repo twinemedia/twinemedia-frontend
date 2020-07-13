@@ -163,7 +163,7 @@
                                 <td>Tags</td>
                                 <td>
                                     <template v-if="file.tags.length > 0">
-                                        <router-link class="tag" v-bind:key="tag" :to="'/search/tags/'+encodeURIComponent(tag)+'/1'" v-for="tag in file.tags">
+                                        <router-link class="tag" :key="tag.name" :to="'/search/tags/'+encodeURIComponent(tag)+'/1'" v-for="tag in file.tags">
                                             {{ tag }}
                                         </router-link>
                                     </template>
@@ -225,7 +225,7 @@
                         </tr>
                         <template v-for="file in file.children">
                             <template>
-                                <file-listing v-bind:key="file" :file="file" display="table" />
+                                <file-listing :key="file.id" :file="file" display="table" />
                             </template>
                         </template>
                     </table>
