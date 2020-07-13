@@ -1,5 +1,5 @@
 <template>
-    <div class="list-add-menu">
+    <div class="list-add-menu" @keydown.esc="$root.closeListAddDialog()">
         <h1>Add to list</h1>
         <input id="list-filter" type="text" @input="applyFilter()" v-model="filter" ref="filter" placeholder="Filter by name">
         <br><br>
