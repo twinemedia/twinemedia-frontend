@@ -1,5 +1,5 @@
 <template>
-    <div class="create-process">
+    <div class="process">
         <center v-if="$root.hasPermission('processes.edit')">
             <center v-if="loading" class="status">
                 <img src="../assets/logo.png" class="logo"/>
@@ -29,7 +29,7 @@
                         <media-settings :key="type" v-else :preset="preset" :type="type == 0 ? 'video' : 'audio'" v-model="settings" />
                         <template v-if="actionError">
                             <br><br>
-                            <div class="rror">
+                            <div class="error">
                                 {{ actionError }}
                             </div>
                         </template>
