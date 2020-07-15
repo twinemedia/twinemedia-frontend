@@ -180,9 +180,9 @@
                                 </td>
                             </tr>
                         </table>
-                        <button v-if="$root.hasPermission('files.edit')" @click="editing = true">Edit File Info</button>
+                        <button v-if="($root.hasPermission('files.edit') && file.creator == $root.account.id) || ($root.hasPermission('files.edit.all') && file.creator != $root.account.id)" @click="editing = true">Edit File Info</button>
                         <button v-if="$root.hasPermission('lists.add') || $root.hasPermission('lists.remove')" @click="$root.openListAddDialog(file.id)">Add/Remove To List</button>
-                        <template v-if="$root.hasPermission('files.delete')">
+                        <template v-if="($root.hasPermission('files.delete') && file.creator == $root.account.id) || ($root.hasPermission('files.delete.all') && file.creator != $root.account.id)">
                             <button v-if="deleting" disabled>Deleting...</button>
                             <button v-else @click="deleteFile()">Delete File</button>
                         </template>
