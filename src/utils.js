@@ -14,7 +14,7 @@ export const api = {
 			var has = false
 			
 			// Overrride permission check if the account has admin privileges, or has that exact permission
-			if(acc.admin || acc.permissions.includes(permission) || acc.permissions.includes('*')) {
+			if(acc.admin || acc.permissions.includes(permission) || acc.permissions.includes(permission+'.all') || acc.permissions.includes('*')) {
 				has = true
 			} else {
 				// Check if user has permission or all parent permissions
