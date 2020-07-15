@@ -226,7 +226,7 @@ export default {
                     this.error = 'API returned unknown status "'+resp.status+'"'
 
                 // Figure out whether description needs to be truncated
-                if(this.list.description) {
+                if(this.list && this.list.description) {
                     var descSplit = this.list.description.split('\n')
                     if(descSplit.length > 3)
                         this.truncatedDesc = descSplit.slice(0, 3).join('\n')
