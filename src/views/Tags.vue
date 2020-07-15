@@ -16,6 +16,8 @@
                                 <option value="1">Alphabetically, descending</option>
                                 <option value="2">Tag length, ascending</option>
                                 <option value="3">Tag length, descending</option>
+                                <option value="4">Tag uses, ascending</option>
+                                <option value="5">Tag uses, descending</option>
                             </select>
                         </div>
                     </div>
@@ -45,7 +47,7 @@
                         </tr>
                         <template v-for="tag in tags">
                             <tr :key="tag.name">
-                                <td><router-link :to="'/search/tags/'+encodeURIComponent(tag.name)+'/1'">{{ tag.name }}</router-link></td>
+                                <td><router-link :to="'/search/tags/'+encodeURIComponent(tag.name)+'/1'">{{ tag.name }}</router-link> ({{ tag.files }})</td>
                             </tr>
                         </template>
                     </table>
