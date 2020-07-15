@@ -3,7 +3,7 @@
         <input ref="tags" :placeholder="placeholder" :disabled="disabled" :value="value" type="text" @input="updateValue()" @focus="focus" @blur="blur" v-on:keydown.38="selectUp" v-on:keydown.40="selectDown" @keyup="checkCursor()" @keydown.enter="insertTag($event)" @keydown.space="insertTag($event)" @keydown.tab="insertTag($event, true)">
         <div class="tag-chooser" :style="{ display: (tags.length > 0) ? 'block' : 'none' }">
             <template v-for="(tag, index) in tags">
-                <span v-bind:key="index" @mouseenter="selected = index" @mouseleave="selected = -1" @mousedown="insertTag($event)" :class="[selected == index ? 'tag-selected' : 'tag-unselected']">{{ tag.name }}</span>
+                <span v-bind:key="index" @mouseenter="selected = index" @mouseleave="selected = -1" @mousedown="insertTag($event)" :class="[selected == index ? 'tag-selected' : 'tag-unselected']">{{ tag.name }} <span class="tag-uses">({{ tag.files }})</span></span>
                 <br v-bind:key="index">
             </template>
         </div>
@@ -23,6 +23,9 @@
 }
 .tag-chooser span:hover, .tag-selected {
     background: #3e8036;
+}
+.tag-uses {
+    font-size: 12px;
 }
 
 input {
