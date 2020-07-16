@@ -21,9 +21,19 @@
                             </select>
                         </div>
                         <div class="option">
-                            File Mime
+                            File Type
                             <br><br>
-                            <input style="width: 180px;" type="text" v-model="mime" placeholder="e.g. video/*"/>
+                            <select v-model="mimePreset" @change="updateMimePreset()">
+                                <option value="any">Any</option>
+                                <option value="images">Images</option>
+                                <option value="videos">Videos</option>
+                                <option value="audio">Music and Audio</option>
+                                <option value="custom">Custom MIME Type</option>
+                            </select>
+                            <template v-if="mimePreset == 'custom'">
+                                <br><br>
+                                <input style="width: 180px;" type="text" v-model="mime" placeholder="e.g. video/*" />
+                            </template>
                         </div>
                         <div class="option">
                             Display Type
@@ -140,12 +150,12 @@ export default {
             optionsShown: false,
             currentPage: 0,
             currentTags: [],
-            displayType: Window.vue.displayType || '1'
+            displayType: Window.vue.displayType || '1',
+            mimePreset: 'any'
         }
     },
     beforeDestroy() {
         Window.vue.displayType = this.displayType
-        Window.vue.searchMime = this.mime
         Window.vue.searchOrder = this.order
     },
     components: {
@@ -196,13 +206,17 @@ export default {
                 })
 
                 try {
+                    var mime = this.mime.trim()
+                    if(mime.length < 1)
+                        mime = '*'
+
                     var res = await api.get(apiRoot+'media/tags', {
                         tags: JSON.stringify(tags),
                         excludeTags: JSON.stringify(exclude),
                         offset: this.currentPage*50 || 0,
                         limit: 50,
                         order: this.order,
-                        mime: this.mime.replace(/\*/g, '%')
+                        mime: mime.replace(/\*/g, '%')
                     })
 
                     if(res.status == 'success') {
@@ -216,6 +230,23 @@ export default {
                     this.error = err
                 }
                 this.loading = false
+            }
+        },
+        updateMimePreset() {
+            if(this.mimePreset == 'any')
+                this.mime = '*'
+            else if(this.mimePreset == 'images')
+                this.mime = 'image/*'
+            else if(this.mimePreset == 'videos')
+                this.mime = 'video/*'
+            else if(this.mimePreset == 'audio')
+                this.mime = 'audio/*'
+            else if(this.mimePreset == 'custom')
+                this.mime = ''
+
+            if(this.mimePreset != 'custom') {
+                this.currentPage = 0
+                this.fetchFiles()
             }
         },
         processTags() {
