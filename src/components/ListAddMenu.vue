@@ -4,7 +4,7 @@
         <input id="list-filter" type="text" @input="applyFilter()" v-model="filter" ref="filter" placeholder="Filter by name">
         <br><br>
         <div id="lists-container">
-            <div v-if="$root.hasPermission('lists.create')">
+            <div v-if="$root.hasPermission('lists.create') && $root.hasPermission('lists.add')">
                 <form @submit.prevent="createList()">
                     <div class="list-display">
                         <input type="submit" ref="listSubmit" value="+">
@@ -14,12 +14,12 @@
             </div>
             <div v-for="list in lists" :key="list.id" class="list-display">
                 <template v-if="addedLists.includes(list.id)">
-                    <button v-if="$root.hasPermission('lists.remove')" @click="remove(list.id)">-</button>
-                    <button v-else>-</button>
+                    <button v-if="($root.hasPermission('lists.remove') && list.creator == $root.account.id) || ($root.hasPermission('lists.remove.all') && list.creator != $root.account.id)" @click="remove(list.id)">-</button>
+                    <button v-else disabled>-</button>
                 </template>
                 <template v-else>
-                    <button v-if="$root.hasPermission('lists.add')" @click="add(list.id)">+</button>
-                    <button v-else>+</button>
+                    <button v-if="($root.hasPermission('lists.add') && list.creator == $root.account.id) || ($root.hasPermission('lists.add.all') && list.creator != $root.account.id)" @click="add(list.id)">+</button>
+                    <button v-else disabled>+</button>
                 </template>
                 <b :title="list.name" @click="$root.closeListAddDialog()"><router-link :to="'/list/'+list.id">{{ $root.limit(list.name, 25) }}</router-link></b>
                 <br>
