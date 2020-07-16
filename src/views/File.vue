@@ -187,7 +187,7 @@
                             <button v-else @click="deleteFile()">Delete File</button>
                         </template>
                         <template v-if="!file.parent">
-                            <button v-if="$root.hasPermission('files.child') && (file.mime.startsWith('audio/') || file.mime.startsWith('video/'))" @click="childView = true">Create Child File</button>
+                            <button v-if="($root.hasPermission('files.child') && file.creator == $root.account.id) || ($root.hasPermission('files.child.all') && file.creator != $root.account.id) && (file.mime.startsWith('audio/') || file.mime.startsWith('video/'))" @click="childView = true">Create Child File</button>
                         </template>
                     </template>
                 </div>
