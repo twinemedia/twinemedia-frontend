@@ -13,14 +13,8 @@
                 </form>
             </div>
             <div v-for="list in lists" :key="list.id" class="list-display">
-                <template v-if="addedLists.includes(list.id)">
-                    <button v-if="($root.hasPermission('lists.remove') && list.creator == $root.account.id) || ($root.hasPermission('lists.remove.all') && list.creator != $root.account.id)" @click="remove(list.id)">-</button>
-                    <button v-else disabled>-</button>
-                </template>
-                <template v-else>
-                    <button v-if="($root.hasPermission('lists.add') && list.creator == $root.account.id) || ($root.hasPermission('lists.add.all') && list.creator != $root.account.id)" @click="add(list.id)">+</button>
-                    <button v-else disabled>+</button>
-                </template>
+                <input v-if="($root.hasPermission('lists.remove') && list.creator == $root.account.id) || ($root.hasPermission('lists.remove.all') && list.creator != $root.account.id)" type="checkbox" :checked="addedLists.includes(list.id)" @click="toggle(list.id)">
+                <input v-else type="checkbox" :checked="addedLists.includes(list.id)" disabled>
                 <b :title="list.name" @click="$root.closeListAddDialog()"><router-link :to="'/list/'+list.id">{{ $root.limit(list.name, 25) }}</router-link></b>
                 <br>
                 <i>{{ listVisibilities[list.visibility] }}</i>
@@ -30,7 +24,7 @@
 </template>
 
 <style scoped>
-button, input[type="submit"] {
+button, input[type="submit"], input[type="checkbox"] {
     float: left;
     font-size: 20px;
     font-weight: bold;
@@ -143,6 +137,12 @@ export default {
                 if(list.name.trim().toLowerCase().includes(term))
                     this.lists.push(list)
             })
+        },
+        toggle(listId) {
+            if(this.addedLists.includes(listId))
+                this.remove(listId)
+            else
+                this.add(listId)
         },
         async add(listId) {
             this.addedLists.push(listId)
