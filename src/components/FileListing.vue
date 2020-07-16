@@ -14,9 +14,16 @@
             <i :title="file.filename">({{ $root.limit(file.filename, 50) }})</i>
         </router-link>
         <p><a :href="filesRoot+file.id+'/'+$root.urlEncode(file.filename)">Download</a></p>
-        <template v-if="addable && ($root.hasPermission('lists.add') || $root.hasPermission('lists.remove'))">
+        <template v-if="addable &&
+            ($root.hasPermission('lists.add') || $root.hasPermission('lists.remove'))
+            &&
+            (($root.hasPermission('files.view') && file.creator == $root.account.id)
+            ||
+            ($root.hasPermission('files.view.all') && file.creator != $root.account.id))
+        ">
             <a href="" @click.prevent="$root.openListAddDialog(file.id)">Add/remove to list</a>
         </template>
+        <br v-else>
         <slot></slot>
     </div>
     <tr v-else class="file-listing">
