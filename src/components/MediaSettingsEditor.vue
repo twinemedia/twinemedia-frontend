@@ -2,7 +2,7 @@
     <div class="media-settings-editor">
         <p><b>Encode Settings</b></p>
         <label>File Type:</label>
-        <select v-model="extension" @change="updateValue()">
+        <select v-model="extension" @change="updateValue()" :disabled="disabled">
             <template v-if="type == 'video'">
                 <option value="mp4">MP4</option>
                 <option value="webm">VP9 (Webm)</option>
@@ -19,21 +19,26 @@
         </select>
         <template v-if="type == 'video'">
             <p>Frame rate (Use <code>-1</code> to keep original value)</p>
-            <label>Frame rate: </label> <input placeholder="Frame rate (e.g. 30)" min="-1" max="512" type="number" v-model="frame_rate" @change="updateValue()">
+            <label>Frame rate: </label>
+            <input placeholder="Frame rate (e.g. 30)" min="-1" max="512" type="number" v-model="frame_rate" @change="updateValue()" :disabled="disabled">
             <br><br>
         </template>
         <p>Bitrate (Use <code>-1</code> to keep original value)</p>
-        <label>Audio Bitrate:</label> <input placeholder="Audio Bitrate (e.g. 320)" min="-1" max="51200" type="number" v-model="audio_bitrate" @change="updateValue()" /> kB/s
+        <label>Audio Bitrate:</label>
+        <input placeholder="Audio Bitrate (e.g. 320)" min="-1" max="51200" type="number" v-model="audio_bitrate" @change="updateValue()" :disabled="disabled" /> kB/s
         <br><br>
         <template v-if="type == 'video'">
-            <label>Video Bitrate:</label> <input placeholder="Video Bitrate (e.g. 2048)" min="-1" max="51200" type="number" v-model="video_bitrate" @change="updateValue()" /> kB/s
+            <label>Video Bitrate:</label>
+            <input placeholder="Video Bitrate (e.g. 2048)" min="-1" max="51200" type="number" v-model="video_bitrate" @change="updateValue()" :disabled="disabled" /> kB/s
             <br><br>
         </template>
         <template v-if="type == 'video'">
             <p>Video Dimensions (Use <code>-1</code> to keep aspect ratio of original video)</p>
-            <label>Width:</label> <input placeholder="Width (e.g. 640)" min="-1" max="7680" type="number" v-model="width" @change="updateValue()" />
+            <label>Width:</label>
+            <input placeholder="Width (e.g. 640)" min="-1" max="7680" type="number" v-model="width" @change="updateValue()" :disabled="disabled" />
             <br><br>
-            <label>Height:</label> <input placeholder="Height (e.g. 360)" min="-1" max="4320" type="number" v-model="height" @change="updateValue()" />
+            <label>Height:</label>
+            <input placeholder="Height (e.g. 360)" min="-1" max="4320" type="number" v-model="height" @change="updateValue()" :disabled="disabled" />
             <template v-if="thumbnail">
                 <br><br>
                 <img :src="thumbnail" :width="width" :height="height" alt="Thumbnail" />
@@ -57,7 +62,7 @@ img {
 <script>
 export default {
     name: 'MediaSettingsEditor',
-    props: ['type', 'metadata', 'thumbnail', 'preset'],
+    props: ['type', 'metadata', 'thumbnail', 'preset', 'disabled'],
     data() {
         return {
             width: -1,
