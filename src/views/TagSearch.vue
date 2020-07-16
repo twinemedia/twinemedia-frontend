@@ -78,6 +78,7 @@
                                 <th>Type</th>
                                 <th>Uploader</th>
                                 <th>File Link</th>
+                                <th v-if="$root.hasPermission('lists.add') || $root.hasPermission('lists.remove')">Action</th>
                             </tr>
                             <template v-for="file in files">
                                 <file-listing :key="file.id" :file="file" display="table" addable="true" />

@@ -62,6 +62,20 @@
         <td v-else>
             <a :href="filesRoot+file.id+'/'+$root.urlEncode(file.filename)">Download</a>
         </td>
+        <template v-if="addable">
+            <td>
+                <template v-if="
+                    ($root.hasPermission('lists.add') || $root.hasPermission('lists.remove'))
+                    &&
+                    (($root.hasPermission('files.view') && file.creator == $root.account.id)
+                    ||
+                    ($root.hasPermission('files.view.all') && file.creator != $root.account.id))
+                ">
+                    <a href="" @click.prevent="$root.openListAddDialog(file.id)">Add/remove to list</a>
+                </template>
+                <i v-else>None</i>
+            </td>
+        </template>
         <slot></slot>
     </tr>
 </template>
