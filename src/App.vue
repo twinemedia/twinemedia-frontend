@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav" v-if="$route.name != 'auth' && $root.sessionFetched">
-      <div style="width: calc(100vw - 150px)">
+      <div style="width: calc(100vw - 230px)">
         <template v-if="$root.authenticated">
           <router-link to="/"><img src="./assets/logo.png"/></router-link>
           <router-link to="/">Dashboard</router-link> |
@@ -21,11 +21,11 @@
         <template v-if="$root.hasPermission('tags.list')">
           <router-link to="/tags/">Tags</router-link> |
         </template>
-        <template v-if="$root.hasPermission('processes.list')">
-          <router-link to="/processes/">Process Presets</router-link> |
-        </template>
         <template v-if="$root.hasPermission('lists.list')">
-          <router-link to="/lists/">Lists</router-link>
+          <router-link to="/lists/">Lists</router-link> |
+        </template>
+        <template v-if="$root.hasPermission('processes.list')">
+          <router-link to="/processes/">Process Presets</router-link>
         </template>
       </div>
     </div>
@@ -336,10 +336,6 @@ code {
   width: 25px !important;
   height: auto !important;
   margin-right: 8px;
-}
-#my-account-spacer {
-  width: 250px;
-  float: right;
 }
 
 @keyframes modalOpen {
