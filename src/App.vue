@@ -1,38 +1,33 @@
 <template>
   <div id="app">
     <div id="nav" v-if="$route.name != 'auth' && $root.sessionFetched">
-      <template v-if="$root.authenticated">
-        <router-link to="/"><img src="./assets/logo.png"/></router-link>
-        <router-link to="/">Dashboard</router-link> |
-        <router-link to="/account/self">My Account</router-link> |
-      </template>
-      <template v-else>
-        <img src="./assets/logo.png"/>
-        <b>{{ $root.appName }}</b> |
-        <router-link to="/auth">Sign In</router-link>
-      </template>
-      <template v-if="$root.hasPermission('upload')">
-        <router-link to="/upload">Upload</router-link> |
-      </template>
-      <template v-if="$root.hasPermission('files.list')">
-        <router-link to="/search">Search</router-link> |
-        <router-link to="/search/tags/">Tag Search</router-link> |
-      </template>
-      <template v-if="$root.hasPermission('tags.list')">
-        <router-link to="/tags/">Tags</router-link> |
-      </template>
-      <template v-if="$root.hasPermission('accounts.list')">
-        <router-link to="/accounts/">Accounts</router-link> |
-      </template>
-      <template v-if="$root.hasPermission('processes.list')">
-        <router-link to="/processes/">Process Presets</router-link> |
-      </template>
-      <template v-if="$root.hasPermission('lists.list')">
-        <router-link to="/lists/">Lists</router-link>
-      </template>
-      <template v-if="$root.authenticated">
-        <button id="logout-button" @click="logout()">Log Out</button>
-      </template>
+      <div style="width: calc(100vw - 150px)">
+        <template v-if="$root.authenticated">
+          <router-link to="/"><img src="./assets/logo.png"/></router-link>
+          <router-link to="/">Dashboard</router-link> |
+        </template>
+        <template v-else>
+          <img src="./assets/logo.png"/>
+          <b>{{ $root.appName }}</b> |
+          <router-link to="/auth">Sign In</router-link>
+        </template>
+        <template v-if="$root.hasPermission('upload')">
+          <router-link to="/upload">Upload</router-link> |
+        </template>
+        <template v-if="$root.hasPermission('files.list')">
+          <router-link to="/search">Search</router-link> |
+          <router-link to="/search/tags/">Tag Search</router-link> |
+        </template>
+        <template v-if="$root.hasPermission('tags.list')">
+          <router-link to="/tags/">Tags</router-link> |
+        </template>
+        <template v-if="$root.hasPermission('processes.list')">
+          <router-link to="/processes/">Process Presets</router-link> |
+        </template>
+        <template v-if="$root.hasPermission('lists.list')">
+          <router-link to="/lists/">Lists</router-link>
+        </template>
+      </div>
     </div>
     <template v-if="$root.error">
       <center>
@@ -58,7 +53,30 @@
         </div>
       </template>
     </template>
+    <div v-if="$root.authenticated" id="my-account" :class="[showAccountOptions ? 'shown' : '']" @mouseleave="showAccountOptions = false">
+      <div id="my-account-label" @click="toggleOptions()">
+        <img src="./assets/user.png" id="my-account-image">
+        <b>{{ $root.limit($root.account.name, 20) }}</b>
+      </div>
+      <router-link to="/account/self">Manage My Account</router-link>
+      <br>
+      <router-link to="/account/self/preferences">Preferences</router-link>
+      <br>
+      <template v-if="$root.hasPermission('accounts.list')">
+        <router-link to="/accounts/">All Accounts</router-link>
+        <br>
+      </template>
+      <a href="" @click.prevent="logout()">Log Out</a>
+    </div>
   </div>
+  <!-- //  - name (optional): String, the new name of the account
+    //  - email (optional): String, the new email address of the account
+    //  - password (optional): String, the new password for this account
+    //  - excludeTags (optional): JSON array, tags to globally exclude when listing files (from searches, lists, or anywhere else an array of files would be returned other than file children)
+    //  - excludeOtherMedia (optional): Bool, whether to globally exclude media created by other users when viewing or listing any media
+    //  - excludeOtherLists (optional): Bool, whether to globally exclude lists created by other users
+    //  - excludeOtherTags (optional): Bool, whether to globally exclude tags added to files created by other users
+    //  - excludeOtherProcesses (optional): Bool, whether to globally exclude processes created by other users -->
 </template>
 
 <script>
@@ -69,11 +87,19 @@ export default {
   components: {
     'list-add-menu': ListAddMenu
   },
+  data() {
+    return {
+      showAccountOptions: false
+    }
+  },
   methods: {
     logout() {
       localStorage.setItem('token', undefined)
       
       location.reload()
+    },
+    toggleOptions() {
+      this.showAccountOptions = !this.showAccountOptions
     }
   }
 }
@@ -123,7 +149,7 @@ input[type = "text"], input[type = "password"], input[type = number], textarea, 
   padding: 5px;
   font-weight: bold;
 }
-input[type = "text"]:disabled, input[type = "password"]:disabled, input[type = number]:disabled, textarea:disabled, .input-style:disabled {
+input[type = "text"]:disabled, input[type = "password"]:disabled, input[type = number]:disabled, textarea:disabled, .input-style:disabled, select:disabled {
   border-bottom: none;
 }
 button, input[type = "submit"] {
@@ -215,6 +241,9 @@ code {
   border-radius: 10px;
   cursor: default;
 }
+.info a {
+  color: white;
+}
 .panel {
     background: rgb(20, 20, 20);
     padding: 10px;
@@ -256,11 +285,6 @@ code {
   background:rgba(0, 0, 0, 0.6);
   display: none;
 }
-#logout-button {
-  float: right;
-  position: relative;
-  right: 15px;
-}
 #nav {
   z-index: 98;
   border-bottom: 2px solid #3e8036;
@@ -273,7 +297,6 @@ code {
   top: 0px;
   position: fixed;
   width: 100%;
-  /* height: 35px; */
   overflow-x: auto;
   word-wrap: none;
 }
@@ -284,6 +307,47 @@ code {
   position: relative;
   top: 5px;
   margin-right: 10px;
+}
+#my-account {
+  background: rgba(62, 128, 54, 0);
+  transition: background 0.3s, height 0.3s;
+  position: fixed;
+  padding: 5px;
+  left: calc(100vw - 220px);
+  top: 3px;
+  width: 195px;
+  height: 29px;
+  z-index: 99;
+  overflow-y: hidden;
+}
+#my-account.shown {
+  background: rgb(33, 77, 28);
+  height: 150px;
+}
+#my-account a {
+  color: white;
+  border-bottom: 1px solid white;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+#my-account-label {
+  text-align: center;
+  cursor: pointer;
+  border-bottom: 2px solid rgba(33, 59, 30, 1);
+  margin-bottom: 10px;
+}
+#my-account-label b {
+  position: relative;
+  bottom: 6px;
+}
+#my-account-image {
+  width: 25px !important;
+  height: auto !important;
+  margin-right: 8px;
+}
+#my-account-spacer {
+  width: 250px;
+  float: right;
 }
 
 @keyframes modalOpen {
