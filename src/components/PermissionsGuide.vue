@@ -13,16 +13,16 @@
             </div>
             <div class="permission">
                 <p><b>files</b></p>
-                <p> - files.list<i>.all</i> <i>Allows listing and searching files</i></p>
-                <p> - files.view<i>.all</i> <i>Allows viewing file info</i></p>
-                <p> - files.edit<i>.all</i> <i>Allows editing file info</i></p>
-                <p> - files.delete<i>.all</i> <i>Allows deleting files</i></p>
-                <p> - files.child<i>.all</i> <i>Allows creating child media files</i></p>
+                <p> - files.list(<i>.all</i>) <i>Allows listing and searching files</i></p>
+                <p> - files.view(<i>.all</i>) <i>Allows viewing file info</i></p>
+                <p> - files.edit(<i>.all</i>) <i>Allows editing file info</i></p>
+                <p> - files.delete(<i>.all</i>) <i>Allows deleting files</i></p>
+                <p> - files.child(<i>.all</i>) <i>Allows creating child media files</i></p>
             </div>
             <div class="permission">
                 <p><b>tags</b></p>
-                <p> - tags.list<i>.all</i> <i>Allows listing and searching tags</i></p>
-                <p> - tags.info<i>.all</i> <i>Allows viewing tag info</i></p>
+                <p> - tags.list(<i>.all</i>) <i>Allows listing and searching tags</i></p>
+                <p> - tags.info(<i>.all</i>) <i>Allows viewing tag info</i></p>
             </div>
             <div class="permission">
                 <p><b>accounts</b></p>
@@ -33,21 +33,21 @@
             </div>
             <div class="permission">
                 <p><b>lists</b></p>
-                <p> - lists.list<i>.all</i> <i>Allows listing and searching lists</i></p>
-                <p> - lists.view<i>.all</i> <i>Allows viewing lists and their contents</i></p>
-                <p> - lists.edit<i>.all</i> <i>Allows editing list info</i></p>
-                <p> - lists.add<i>.all</i> <i>Allows adding items to lists</i></p>
-                <p> - lists.remove<i>.all</i> <i>Allows removing items from lists</i></p>
+                <p> - lists.list(<i>.all</i>) <i>Allows listing and searching lists</i></p>
+                <p> - lists.view(<i>.all</i>) <i>Allows viewing lists and their contents</i></p>
+                <p> - lists.edit(<i>.all</i>) <i>Allows editing list info</i></p>
+                <p> - lists.add(<i>.all</i>) <i>Allows adding items to lists</i></p>
+                <p> - lists.remove(<i>.all</i>) <i>Allows removing items from lists</i></p>
                 <p> - lists.create <i>Allows creating new lists</i></p>
-                <p> - lists.delete<i>.all</i> <i>Allows deleting lists</i></p>
+                <p> - lists.delete(<i>.all</i>) <i>Allows deleting lists</i></p>
             </div>
             <div class="permission">
                 <p><b>processes</b></p>
-                <p> - processes.list<i>.all</i> <i>Allows listing all process presets</i></p>
-                <p> - processes.view<i>.all</i> <i>Allows viewing process preset settings</i></p>
-                <p> - processes.edit<i>.all</i> <i>Allows editing process preset settings</i></p>
+                <p> - processes.list(<i>.all</i>) <i>Allows listing all process presets</i></p>
+                <p> - processes.view(<i>.all</i>) <i>Allows viewing process preset settings</i></p>
+                <p> - processes.edit(<i>.all</i>) <i>Allows editing process preset settings</i></p>
                 <p> - processes.create <i>Allows creating new process presets</i></p>
-                <p> - processes.delete<i>.all</i> <i>Allows deleting process presets</i></p>
+                <p> - processes.delete(<i>.all</i>) <i>Allows deleting process presets</i></p>
             </div>
     </div>
 </template>
