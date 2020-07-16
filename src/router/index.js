@@ -98,6 +98,14 @@ const routes = [
     }
   },
   {
+    path: '/account/self/preferences',
+    name: 'account-preferences',
+    component: () => import(/* webpackChunkName: "account-preferences" */ '../views/AccountPreferences.vue'),
+    meta: {
+      title: "My Account | "+appName
+    }
+  },
+  {
     path: '/accounts/create',
     name: 'create-account',
     component: () => import(/* webpackChunkName: "create-account" */ '../views/CreateAccount.vue'),
@@ -158,7 +166,7 @@ const routes = [
     name: 'process',
     component: () => import(/* webpackChunkName: "process" */ '../views/Process.vue'),
     meta: {
-      title: "Process Presets | "+appName
+      title: "View Process Preset | "+appName
     }
   },
   {
