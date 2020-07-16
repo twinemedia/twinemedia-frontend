@@ -143,6 +143,8 @@ export default {
 
                                 // Collect permissions
                                 var perms = this.permissions.trim().split(' ')
+                                if(perms[0].length < 1)
+                                    perms = []
 
                                 for(let i = 0; i < perms.length; i++) {
                                     if(!permissions.includes(perms[i].trim().toLowerCase()))

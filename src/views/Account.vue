@@ -255,6 +255,8 @@ export default {
 
                         // Collect permissions
                         var perms = this.edits.permissions.trim().split(' ')
+                        if(perms[0].length < 1)
+                            perms = []
                         params.permissions = []
 
                         if(this.edits.admin == 'false' || this.edits.admin == false) {
@@ -279,7 +281,7 @@ export default {
                             this.account.name = this.edits.name.trim()
                             this.account.email = this.edits.email.trim().toLowerCase()
                             this.account.admin = this.edits.admin
-                            this.account.permissions = this.edits.permissions.split(' ')
+                            this.account.permissions = JSON.parse(params.permissions)
 
                             this.saveError = null
                             this.saving = false
