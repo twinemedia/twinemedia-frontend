@@ -87,11 +87,15 @@
                             <td>{{ listVisibilities[list.visibility] }}</td>
                             <td>{{ list.created_on }}</td>
                             <td>
-                                <template v-if="$root.hasPermission('lists.edit') || $root.hasPermission('lists.delete')">
-                                    <template v-if="$root.hasPermission('lists.edit')">
+                                <template v-if="
+                                (($root.hasPermission('lists.edit') && list.creator == $root.account.id) || ($root.hasPermission('lists.edit.all') && list.creator != $root.account.id))
+                                ||
+                                (($root.hasPermission('lists.delete') && list.creator == $root.account.id) || ($root.hasPermission('lists.delete.all') && list.creator != $root.account.id))
+                                ">
+                                    <template v-if="($root.hasPermission('lists.edit') && list.creator == $root.account.id) || ($root.hasPermission('lists.edit.all') && list.creator != $root.account.id)">
                                         <router-link :to="'/list/'+list.id+'/edit'"><button class="list-edit">Edit</button></router-link>
                                     </template>
-                                    <template v-if="$root.hasPermission('lists.delete')">
+                                    <template v-if="($root.hasPermission('lists.delete') && list.creator == $root.account.id) || ($root.hasPermission('lists.delete.all') && list.creator != $root.account.id)">
                                         <button class="list-delete" v-if="deleting[list.id]" disabled>Deleting...</button>
                                         <button class="list-delete" v-else @click="deleteList(list.id)">Delete</button>
                                     </template>
@@ -255,9 +259,9 @@ export default {
                                 break
                             }
                     } else if(res.status == 'error') {
-                        this.error = res.error
+                        alert(res.error)
                     } else {
-                        this.error = 'API returned unknown status "'+this.status+'"'
+                        alert('API returned unknown status "'+this.status+'"')
                     }
                 } catch(err) {
                     alert("Failed to delete list: "+err)
