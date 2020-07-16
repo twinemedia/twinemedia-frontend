@@ -69,14 +69,6 @@
       <a href="" @click.prevent="logout()">Log Out</a>
     </div>
   </div>
-  <!-- //  - name (optional): String, the new name of the account
-    //  - email (optional): String, the new email address of the account
-    //  - password (optional): String, the new password for this account
-    //  - excludeTags (optional): JSON array, tags to globally exclude when listing files (from searches, lists, or anywhere else an array of files would be returned other than file children)
-    //  - excludeOtherMedia (optional): Bool, whether to globally exclude media created by other users when viewing or listing any media
-    //  - excludeOtherLists (optional): Bool, whether to globally exclude lists created by other users
-    //  - excludeOtherTags (optional): Bool, whether to globally exclude tags added to files created by other users
-    //  - excludeOtherProcesses (optional): Bool, whether to globally exclude processes created by other users -->
 </template>
 
 <script>
