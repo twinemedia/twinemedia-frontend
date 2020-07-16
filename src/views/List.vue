@@ -50,12 +50,12 @@
                                 <option value="1">Previews</option>
                             </select>
                         </div>
-                        <div class="option" v-if="$root.hasPermission('lists.edit')">
+                        <div class="option" v-if="($root.hasPermission('lists.edit') && list.creator == $root.account.id) || ($root.hasPermission('lists.edit.all') && list.creator != $root.account.id)">
                             Edit List
                             <br><br>
                             <router-link :to="'/list/'+this.$route.params.id+'/edit/'"><button>Edit</button></router-link>
                         </div>
-                        <div class="option" v-if="$root.hasPermission('lists.delete')">
+                        <div class="option" v-if="($root.hasPermission('lists.delete') && list.creator == $root.account.id) || ($root.hasPermission('lists.delete.all') && list.creator != $root.account.id)">
                             Delete List
                             <br><br>
                             <button v-if="deleting" disabled>Deleting...</button>
@@ -84,7 +84,7 @@
                     <template v-if="displayType == 1">
                         <template v-for="file in files">
                             <file-listing :key="file.id" :file="file" display="preview" :addable="list.type == 1 && ($root.hasPermission('lists.add') || $root.hasPermission('lists.remove'))">
-                                <template v-if="list.type == 0 && $root.hasPermission('lists.remove')">
+                                <template v-if="list.type == 0 && (($root.hasPermission('lists.add') && list.creator == $root.account.id) || ($root.hasPermission('lists.edit.all') && list.creator != $root.account.id))">
                                     <a v-if="removing[file.id]" href="" @click.prevent="">Removing...</a>
                                     <a v-else href="" @click.prevent="remove(file.id)">Remove</a>
                                 </template>
