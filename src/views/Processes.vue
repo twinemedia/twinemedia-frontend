@@ -35,6 +35,7 @@
                         <tr>
                             <th>MIME Type</th>
                             <th>Format Extension</th>
+                            <th>Creator</th>
                             <th>Action</th>
                         </tr>
                         <tr v-for="process in processes" :key="process.id">
@@ -43,7 +44,15 @@
                             </td>
                             <td>{{ process.settings.extension }}</td>
                             <td>
-                                <template v-if="$root.hasPermission('processes.delete')">
+                                <template v-if="process.creator_name">
+                                    <router-link :to="'/account/'+process.creator">{{ process.creator_name }}</router-link>
+                                </template>
+                                <template v-else>
+                                    <i>Deleted Account</i>
+                                </template>
+                            </td>
+                            <td>
+                                <template v-if="($root.hasPermission('processes.delete') && process.creator == $root.account.id) || ($root.hasPermission('processes.delete.all') && process.creator != $root.account.id)">
                                     <button class="process-delete" v-if="deleting[process.id]" disabled>Deleting...</button>
                                     <button class="process-delete" v-else @click="deleteProcess(process.id)">Delete</button>
                                 </template>
