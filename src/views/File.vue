@@ -358,8 +358,9 @@ export default {
         this.init()
     },
     beforeRouteUpdate(to, from, next) {
-        next()
+        this.error = null
         this.init()
+        next()
     },
     methods: {
         encodeURIComponent,
