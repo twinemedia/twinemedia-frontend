@@ -1,6 +1,6 @@
 <template>
     <div class="process">
-        <center v-if="$root.hasPermission('processes.edit')">
+        <center v-if="$root.hasPermission('processes.view')">
             <center v-if="loading" class="status">
                 <img src="../assets/logo.png" class="logo"/>
                 <br>
@@ -17,16 +17,32 @@
                 <br><br>
                 <div class="panel">
                     <h2>Process Info</h2>
+                    <template v-if="$root.account.id != creator">
+                        <div class="info">
+                            This process preset was created by
+                            <template v-if="creatorName">
+                                <router-link :to="'/account/'+creator">{{ creatorName }}</router-link>
+                            </template>
+                            <template v-else>
+                                <i>Deleted Account</i>
+                            </template>,
+                            and as such it will <i>not</i> take effect on any files that you upload.
+                        </div>
+                        <br><br>
+                    </template>
                     <form @submit.prevent="save()">
                         <b>MIME Type</b>
                         <br><br>
-                        <td><input @keyup="updateMime()" placeholder="MIME (e.g. video/mp4)" type="text" v-model="mime" /></td>
+                        <td>
+                            <input v-if="canEdit" @keyup="updateMime()" placeholder="MIME (e.g. video/mp4)" type="text" v-model="mime" />
+                            <input v-else placeholder="MIME (e.g. video/mp4)" type="text" v-model="mime" disabled />
+                        </td>
                         <br>
                         <template v-if="type == 2">
                             <br><br>
                             <div class="error">MIME type must be video or audio</div>
                         </template>
-                        <media-settings :key="type" v-else :preset="preset" :type="type == 0 ? 'video' : 'audio'" v-model="settings" />
+                        <media-settings :key="type" v-else :preset="preset" :type="type == 0 ? 'video' : 'audio'" v-model="settings" :disabled="!canEdit" />
                         <template v-if="actionError">
                             <br><br>
                             <div class="error">
@@ -34,9 +50,11 @@
                             </div>
                         </template>
                         <br><br>
-                        <input v-if="saving" type="submit" disabled value="Saving..." />
-                        <input v-else type="submit" value="Save Preset" />
-                        <template v-if="$root.hasPermission('processes.delete')">
+                        <template v-if="canEdit">
+                            <input v-if="saving" type="submit" disabled value="Saving..." />
+                            <input v-else type="submit" value="Save Preset" />
+                        </template>
+                        <template v-if="($root.hasPermission('processes.delete') && creator == $root.account.id) || ($root.hasPermission('processes.delete.all') && creator != $root.account.id)">
                             <button v-if="deleting" disabled>Deleting...</button>
                             <button v-else @click="deleteProcess()">Delete Preset</button>
                         </template>
@@ -46,7 +64,7 @@
         </center>
         <center v-else>
             <h1>Insufficient Permissions</h1>
-            <p>You are lacking permission to edit processes. (Lacking <code>processes.edit</code> permission)</p>
+            <p>You are lacking permission to view processes. (Lacking <code>processes.view</code> permission)</p>
         </center>
     </div>
 </template>
@@ -93,6 +111,7 @@ export default {
         return {
             // 0=video, 1=audio, 2=invalid
             type: 0,
+            id: null,
             mime: 'video/mp4',
             settings: {},
             saving: false,
@@ -100,7 +119,11 @@ export default {
             actionError: null,
             loading: true,
             error: null,
-            preset: null
+            preset: null,
+            creator: null,
+            creatorName: null,
+            createdOn: null,
+            canEdit: false
         }
     },
     components: {
@@ -133,6 +156,14 @@ export default {
                 if(resp.status == 'success') {
                     this.preset = resp.settings
                     this.mime = resp.mime
+                    this.creator = resp.creator
+                    this.creatorName = resp.creator_name
+                    this.id = resp.id
+                    this.createdOn = resp.created_on
+
+                    this.canEdit = (this.$root.hasPermission('processes.edit') && this.creator == this.$root.account.id)
+                                   ||
+                                   (this.$root.hasPermission('processes.edit.all') && this.creator != this.$root.account.id)
                 } else if(resp.status == 'error') {
                     this.error = 'API returned error: '+resp.error
                 } else {
