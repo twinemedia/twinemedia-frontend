@@ -4,6 +4,7 @@
             <input type="file" id="files" multiple ref="files" @change="uploadFiles"/>
             <center>
                 <h2>Drop files here</h2>
+                <i>Max size: {{ $root.formatSize(maxUpload) }}</i>
             </center>
         </div>
         <div id="progress-area" :key="i">
@@ -40,7 +41,7 @@
     width: 100%;
     height: 100%;
     z-index: 0;
-    transform: translateY(40%);
+    transform: translateY(30%);
 }
 #files {
     opacity: 0;
@@ -104,7 +105,8 @@ export default {
     data() {
         return {
             uploads: Window.vue.uploads,
-            i: 0
+            i: 0,
+            maxUpload: this.$root.account.max_upload
         }
     },
     mounted() {
@@ -116,8 +118,17 @@ export default {
     },
     methods: {
         uploadFile(file) {
+            // Check size
+            if(file.size > this.maxUpload) {
+                alert(`Size of file "${file.name}" exceeds max upload size of ${this.$root.formatSize(this.maxUpload)}`)
+                return
+            }
+
             var form = new FormData()
             form.append('file', file)
+
+            /*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+            console.warn(file)
 
             this.uploads.push({
                 name: file.name,
