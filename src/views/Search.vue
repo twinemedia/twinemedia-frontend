@@ -116,7 +116,7 @@
                 </template>
                 <template v-else>
                     <h2>No Results</h2>
-                    <p>Either you haven't uploaded any files, or your search returned no results</p>
+                    <p>Either you haven't uploaded any files, your file exlusion preferences blocked some files, or your search returned no results</p>
                 </template>
             </div>
         </center>
