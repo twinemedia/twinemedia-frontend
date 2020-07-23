@@ -15,7 +15,7 @@
             <img src="../assets/logo-404.png" class="logo"/>
             <br>
             <h2>Media process failed</h2>
-            <p>{{ error }}</p>
+            <p>{{ file.process_error }}</p>
             <template v-if="$root.hasPermission('files.delete')">
                 <button v-if="deleting" disabled>Deleting...</button>
                 <button v-else @click="deleteFile()">Delete File</button>
@@ -27,7 +27,7 @@
             <p>Processing file...</p>
             <br>
             <div id="process-bar">
-                <b v-if="processProgress == -1">Processing job is queued for this file</b>
+                <b v-if="processProgress == -1 && !processError">Processing job is queued for this file</b>
                 <progress-bar v-else :key="processProgress" :percent="processProgress" :error="processError" :finished="false" />
             </div>
         </center>
@@ -187,7 +187,7 @@
                             <button v-else @click="deleteFile()">Delete File</button>
                         </template>
                         <template v-if="!file.parent">
-                            <button v-if="($root.hasPermission('files.child') && file.creator == $root.account.id) || ($root.hasPermission('files.child.all') && file.creator != $root.account.id) && (file.mime.startsWith('audio/') || file.mime.startsWith('video/'))" @click="childView = true">Create Child File</button>
+                            <button v-if="($root.hasPermission('files.child') && file.creator == $root.account.id) || ($root.hasPermission('files.child.all') && file.creator != $root.account.id) && ((file.mime.startsWith('audio/') || file.mime.startsWith('video/')))" @click="childView = true">Create Child File</button>
                         </template>
                     </template>
                 </div>
