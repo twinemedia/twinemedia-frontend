@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <div id="logo">
-      <img src="../assets/logo.png" :alt="appName+' logo'">
-      <span id="name">{{ appName }}</span>
+      <img src="../assets/logo.png" :alt="$root.appName+' logo'">
+      <span id="name">{{ $root.appName }}</span>
     </div>
     <div id="links">
       <template v-if="$root.hasPermission('upload')">
@@ -77,17 +77,7 @@
 </style>
 
 <script>
-import { appName } from '../constants'
-
 export default {
-  name: 'Home',
-  data() {
-    return {
-      appName
-    }
-  },
-  components: {
-    
-  },
+  name: 'Home'
 }
 </script>

@@ -42,7 +42,7 @@
         <center>
           <img src="./assets/logo.png" class="logo"/>
           <br>
-          <h2>TwineMedia</h2>
+          <h2>{{ $root.appName }}</h2>
           <p>Connecting...</p>
         </center>
       </template>
