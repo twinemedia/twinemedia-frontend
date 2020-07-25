@@ -17,8 +17,8 @@
             <h2>Media process failed</h2>
             <p>{{ file.process_error }}</p>
             <template v-if="$root.hasPermission('files.delete')">
-                <button v-if="deleting" disabled>Deleting...</button>
-                <button v-else @click="deleteFile()">Delete File</button>
+                <button v-if="deleting" disabled class="delete-button">Deleting...</button>
+                <button v-else @click="deleteFile()" class="delete-file">Delete File</button>
             </template>
         </center>
         <center v-else-if="file.processing" class="status">
@@ -39,7 +39,7 @@
                 <div class="file-info panel">
                     <h2>File Info</h2>
                     <template v-if="childView">
-                        <form @submit.prevent="createChildFile()">
+                        <form @submit.prevent="createChildFile()" :style="{ 'margin-bottom': file.mime.startsWith('audio/') ? '150px' : 'inherit' }">
                             <template v-if="file.thumbnail">
                                 <media-settings-chooser v-model="childSettings" :type="file.mime.startsWith('audio/') ? 'audio' : 'video'" :thumbnail="thumbsRoot+file.id" />
                             </template>
@@ -180,14 +180,14 @@
                                 </td>
                             </tr>
                         </table>
-                        <button v-if="($root.hasPermission('files.edit') && file.creator == $root.account.id) || ($root.hasPermission('files.edit.all') && file.creator != $root.account.id)" @click="editing = true">Edit File Info</button>
+                        <button v-if="($root.hasPermission('files.edit') && file.creator == $root.account.id) || ($root.hasPermission('files.edit.all') && file.creator != $root.account.id)" @click="editing = true" class="edit-button">Edit File Info</button>
                         <button v-if="$root.hasPermission('lists.add') || $root.hasPermission('lists.remove')" @click="$root.openListAddDialog(file.id)">Add/Remove To List</button>
-                        <template v-if="($root.hasPermission('files.delete') && file.creator == $root.account.id) || ($root.hasPermission('files.delete.all') && file.creator != $root.account.id)">
-                            <button v-if="deleting" disabled>Deleting...</button>
-                            <button v-else @click="deleteFile()">Delete File</button>
-                        </template>
                         <template v-if="!file.parent">
                             <button v-if="(($root.hasPermission('files.child') && file.creator == $root.account.id) || ($root.hasPermission('files.child.all') && file.creator != $root.account.id)) && ((file.mime.startsWith('audio/') || file.mime.startsWith('video/')))" @click="childView = true">Create Child File</button>
+                        </template>
+                        <template v-if="($root.hasPermission('files.delete') && file.creator == $root.account.id) || ($root.hasPermission('files.delete.all') && file.creator != $root.account.id)">
+                            <button v-if="deleting" disabled class="delete-button">Deleting...</button>
+                            <button v-else @click="deleteFile()" class="delete-button">Delete File</button>
                         </template>
                     </template>
                 </div>
@@ -261,6 +261,18 @@ tr td:nth-child(1) {
     width: 25%;
 }
 
+.edit-button {
+    filter: brightness(1.3)
+}
+.delete-button {
+    background: red;
+    background: linear-gradient(180deg, rgb(207, 0, 0) 35%, rgb(53, 0, 0) 100%);
+    border-bottom: 3px solid rgb(85, 0, 0);
+}
+.delete-button:active {
+    background: linear-gradient(0deg, rgb(207, 0, 0) 35%, rgb(53, 0, 0) 100%);
+    border-bottom: 0px solid rgb(85, 0, 0);
+}
 .file-info {
     min-width: 300px;
     width: 60vw;
