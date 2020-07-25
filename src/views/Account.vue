@@ -91,7 +91,7 @@
                                 <br>
                                 <tr>
                                     <td>Administrator</td>
-                                    <td>{{ account.admin ? 'Yes' : 'No' }}</td>
+                                    <td>{{ account.admin != 'false' ? 'Yes' : 'No' }}</td>
                                 </tr>
                                 <br>
                                 <tr>
@@ -107,7 +107,7 @@
                                 <tr>
                                     <td>Permissions</td>
                                     <td>
-                                        <template v-if="account.admin">
+                                        <template v-if="account.admin != 'false'">
                                             All permissions
                                         </template>
                                         <template v-else-if="account.permissions.length > 0">
