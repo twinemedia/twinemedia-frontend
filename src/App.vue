@@ -58,15 +58,19 @@
         <img src="./assets/user.png" id="my-account-image">
         <b>{{ $root.limit($root.account.name, 20) }}</b>
       </div>
-      <router-link to="/account/self">Manage My Account</router-link>
-      <br>
-      <router-link to="/account/self/preferences">Preferences</router-link>
-      <br>
-      <template v-if="$root.hasPermission('accounts.list')">
-        <router-link to="/accounts/">All Accounts</router-link>
+      <template v-if="showAccountOptions">
+        <router-link to="/account/self" class="dropdown-item">Manage My Account</router-link>
         <br>
+        <router-link to="/account/self/preferences" class="dropdown-item">Preferences</router-link>
+        <br>
+        <router-link to="/account/self/keys" class="dropdown-item">API Keys</router-link>
+        <br>
+        <template v-if="$root.hasPermission('accounts.list')">
+          <router-link to="/accounts/" class="dropdown-item">All Accounts</router-link>
+          <br>
+        </template>
+        <a href="" @click.prevent="logout()" class="dropdown-item">Log Out</a>
       </template>
-      <a href="" @click.prevent="logout()">Log Out</a>
     </div>
   </div>
 </template>
@@ -266,6 +270,18 @@ code {
   display: block !important;
   animation: modalOpen 0.2s;
 }
+.dropdown-item {
+  width: 100%;
+  height: 25px;
+  color: white;
+  margin-bottom: 5px;
+  display: inline-block;
+  transition: background 0.2s;
+  padding-top: 5px;
+}
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
 
 #modal-container {
   z-index: 99;
@@ -314,13 +330,7 @@ code {
 }
 #my-account.shown {
   background: rgb(33, 77, 28);
-  height: 150px;
-}
-#my-account a {
-  color: white;
-  border-bottom: 1px solid white;
-  margin-bottom: 5px;
-  display: inline-block;
+  height: 220px;
 }
 #my-account-label {
   text-align: center;
