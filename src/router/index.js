@@ -14,7 +14,7 @@ const routes = [
     name: 'home',
     component: Home,
     meta: {
-      title: "Dashboard | "+appName
+      title: 'Dashboard | '+appName
     }
   },
   {
@@ -30,7 +30,7 @@ const routes = [
     name: 'upload',
     component: () => import(/* webpackChunkName: "upload" */ '../views/Upload.vue'),
     meta: {
-      title: "Upload | "+appName
+      title: 'Upload | '+appName
     }
   },
   {
@@ -38,7 +38,7 @@ const routes = [
     name: 'file',
     component: () => import(/* webpackChunkName: "file" */ '../views/File.vue'),
     meta: {
-      title: "View File | "+appName
+      title: 'View File | '+appName
     }
   },
   {
@@ -46,7 +46,7 @@ const routes = [
     name: 'search',
     component: () => import(/* webpackChunkName: "search" */ '../views/Search.vue'),
     meta: {
-      title: "Search Files | "+appName
+      title: 'Search Files | '+appName
     }
   },
   {
@@ -54,7 +54,7 @@ const routes = [
     name: 'search-paginated',
     component: () => import(/* webpackChunkName: "search-paginated" */ '../views/Search.vue'),
     meta: {
-      title: "Search Files | "+appName
+      title: 'Search Files | '+appName
     }
   },
   {
@@ -62,7 +62,7 @@ const routes = [
     name: 'tag-search',
     component: () => import(/* webpackChunkName: "tag-search" */ '../views/TagSearch.vue'),
     meta: {
-      title: "Tag Search | "+appName
+      title: 'Tag Search | '+appName
     }
   },
   {
@@ -70,7 +70,7 @@ const routes = [
     name: 'tag-search-paginated',
     component: () => import(/* webpackChunkName: "tag-search-paginated" */ '../views/TagSearch.vue'),
     meta: {
-      title: "Tag Search | "+appName
+      title: 'Tag Search | '+appName
     }
   },
   {
@@ -78,7 +78,7 @@ const routes = [
     name: 'tags',
     component: () => import(/* webpackChunkName: "tags" */ '../views/Tags.vue'),
     meta: {
-      title: "Tags | "+appName
+      title: 'Tags | '+appName
     }
   },
   {
@@ -86,7 +86,7 @@ const routes = [
     name: 'tags-paginated',
     component: () => import(/* webpackChunkName: "tags-paginated" */ '../views/Tags.vue'),
     meta: {
-      title: "Tags | "+appName
+      title: 'Tags | '+appName
     }
   },
   {
@@ -94,7 +94,7 @@ const routes = [
     name: 'my-account',
     component: () => import(/* webpackChunkName: "my-account" */ '../views/MyAccount.vue'),
     meta: {
-      title: "My Account | "+appName
+      title: 'My Account | '+appName
     }
   },
   {
@@ -102,7 +102,15 @@ const routes = [
     name: 'account-preferences',
     component: () => import(/* webpackChunkName: "account-preferences" */ '../views/AccountPreferences.vue'),
     meta: {
-      title: "My Account | "+appName
+      title: 'My Account | '+appName
+    }
+  },
+  {
+    path: '/account/self/keys',
+    name: 'api-keys',
+    component: () => import(/* webpackChunkName: "api-keys" */ '../views/ApiKeys.vue'),
+    meta: {
+      title: 'API Keys | '+appName
     }
   },
   {
@@ -110,7 +118,7 @@ const routes = [
     name: 'create-account',
     component: () => import(/* webpackChunkName: "create-account" */ '../views/CreateAccount.vue'),
     meta: {
-      title: "Create Account | "+appName
+      title: 'Create Account | '+appName
     }
   },
   {
@@ -118,7 +126,7 @@ const routes = [
     name: 'accounts',
     component: () => import(/* webpackChunkName: "accounts" */ '../views/Accounts.vue'),
     meta: {
-      title: "Accounts | "+appName
+      title: 'Accounts | '+appName
     }
   },
   {
@@ -126,7 +134,7 @@ const routes = [
     name: 'accounts-paginated',
     component: () => import(/* webpackChunkName: "accounts-paginated" */ '../views/Accounts.vue'),
     meta: {
-      title: "Accounts | "+appName
+      title: 'Accounts | '+appName
     }
   },
   {
@@ -134,7 +142,7 @@ const routes = [
     name: 'account',
     component: () => import(/* webpackChunkName: "account" */ '../views/Account.vue'),
     meta: {
-      title: "View Account | "+appName
+      title: 'View Account | '+appName
     }
   },
   {
@@ -142,7 +150,7 @@ const routes = [
     name: 'create-process',
     component: () => import(/* webpackChunkName: "create-process" */ '../views/CreateProcess.vue'),
     meta: {
-      title: "Create Process Preset | "+appName
+      title: 'Create Process Preset | '+appName
     }
   },
   {
@@ -150,7 +158,7 @@ const routes = [
     name: 'processes',
     component: () => import(/* webpackChunkName: "processes" */ '../views/Processes.vue'),
     meta: {
-      title: "Process Presets | "+appName
+      title: 'Process Presets | '+appName
     }
   },
   {
@@ -158,7 +166,7 @@ const routes = [
     name: 'processes-paginated',
     component: () => import(/* webpackChunkName: "processes-paginated" */ '../views/Processes.vue'),
     meta: {
-      title: "Process Presets | "+appName
+      title: 'Process Presets | '+appName
     }
   },
   {
@@ -166,7 +174,7 @@ const routes = [
     name: 'process',
     component: () => import(/* webpackChunkName: "process" */ '../views/Process.vue'),
     meta: {
-      title: "View Process Preset | "+appName
+      title: 'View Process Preset | '+appName
     }
   },
   {
@@ -174,7 +182,7 @@ const routes = [
     name: 'lists',
     component: () => import(/* webpackChunkName: "lists" */ '../views/Lists.vue'),
     meta: {
-      title: "Lists | "+appName
+      title: 'Lists | '+appName
     }
   },
   {
@@ -182,7 +190,7 @@ const routes = [
     name: 'create-list',
     component: () => import(/* webpackChunkName: "create-list" */ '../views/CreateList.vue'),
     meta: {
-      title: "Create List | "+appName
+      title: 'Create List | '+appName
     }
   },
   {
@@ -190,7 +198,7 @@ const routes = [
     name: 'lists-search-paginated',
     component: () => import(/* webpackChunkName: "lists-paginated" */ '../views/Lists.vue'),
     meta: {
-      title: "Lists | "+appName
+      title: 'Lists | '+appName
     }
   },
   {
@@ -198,7 +206,7 @@ const routes = [
     name: 'list',
     component: () => import(/* webpackChunkName: "list" */ '../views/List.vue'),
     meta: {
-      title: "View List | "+appName
+      title: 'View List | '+appName
     }
   },
   {
@@ -206,7 +214,7 @@ const routes = [
     name: 'edit-list',
     component: () => import(/* webpackChunkName: "list-edit" */ '../views/EditList.vue'),
     meta: {
-      title: "Edit List | "+appName
+      title: 'Edit List | '+appName
     }
   },
   {
@@ -214,7 +222,7 @@ const routes = [
     name: 'list-paginated',
     component: () => import(/* webpackChunkName: "list-paginated" */ '../views/List.vue'),
     meta: {
-      title: "View List | "+appName
+      title: 'View List | '+appName
     }
   },
   {
@@ -222,7 +230,7 @@ const routes = [
     name: 'not-found',
     component: () => import(/* webpackChunkName: "notfound" */ '../views/NotFound.vue'),
     meta: {
-      title: "Not Found | "+appName
+      title: 'Not Found | '+appName
     }
   },
 ]
@@ -230,7 +238,7 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   routes
-});
+})
 
 // Global route guard
 router.beforeEach((to, from, next) => {
@@ -294,6 +302,6 @@ router.beforeEach((to, from, next) => {
       Window.vue.loading = false
     }
   }, 0)
-});
+})
 
 export default router
