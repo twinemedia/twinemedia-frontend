@@ -64,75 +64,29 @@
                             </tr>
                             <br>
                             <tr>
-                                <td>Source Created Before</td>
+                                <td>Source Created After</td>
                                 <td>
-                                    <select v-model="sourceCreatedBefore.specific">
+                                    <select v-model="sourceCreatedAfterSpecific">
                                         <option value="false">Any Time</option>
                                         <option value="true">Specific Time</option>
                                     </select>
-                                    <template v-if="sourceCreatedBefore.specific == true || sourceCreatedBefore.specific == 'true'">
+                                    <template v-if="sourceCreatedAfterSpecific == true || sourceCreatedAfterSpecific == 'true'">
                                         <br><br>
-                                        <div class="input-style">
-                                            <input type="number" v-model="sourceCreatedBefore.hour" min="0" max="24">
-                                            :
-                                            <input type="number" v-model="sourceCreatedBefore.minute" min="0" max="59">
-                                            on
-                                            <input type="number" v-model="sourceCreatedBefore.day" min="1" max="31">
-                                            of
-                                            <select v-model="sourceCreatedBefore.month" class="month-dropdown">
-                                                <option value="0">January</option>
-                                                <option value="1">February</option>
-                                                <option value="2">March</option>
-                                                <option value="3">April</option>
-                                                <option value="4">May</option>
-                                                <option value="5">June</option>
-                                                <option value="6">July</option>
-                                                <option value="7">August</option>
-                                                <option value="8">September</option>
-                                                <option value="9">October</option>
-                                                <option value="10">November</option>
-                                                <option value="11">December</option>
-                                            </select>
-                                            ,
-                                            <input style="width: 55px" type="number" v-model="sourceCreatedBefore.year" min="2019" max="2100">
-                                        </div>
+                                        <time-input v-model="sourceCreatedAfter"></time-input>
                                     </template>
                                 </td>
                             </tr>
                             <br>
                             <tr>
-                                <td>Source Created After</td>
+                                <td>Source Created Before</td>
                                 <td>
-                                    <select v-model="sourceCreatedAfter.specific">
+                                    <select v-model="sourceCreatedBeforeSpecific">
                                         <option value="false">Any Time</option>
                                         <option value="true">Specific Time</option>
                                     </select>
-                                    <template v-if="sourceCreatedAfter.specific == true || sourceCreatedAfter.specific == 'true'">
+                                    <template v-if="sourceCreatedBeforeSpecific == true || sourceCreatedBeforeSpecific == 'true'">
                                         <br><br>
-                                        <div class="input-style">
-                                            <input type="number" v-model="sourceCreatedAfter.hour" min="0" max="24">
-                                            :
-                                            <input type="number" v-model="sourceCreatedAfter.minute" min="0" max="59">
-                                            on
-                                            <input type="number" v-model="sourceCreatedAfter.day" min="1" max="31">
-                                            of
-                                            <select v-model="sourceCreatedAfter.month" class="month-dropdown">
-                                                <option value="0">January</option>
-                                                <option value="1">February</option>
-                                                <option value="2">March</option>
-                                                <option value="3">April</option>
-                                                <option value="4">May</option>
-                                                <option value="5">June</option>
-                                                <option value="6">July</option>
-                                                <option value="7">August</option>
-                                                <option value="8">September</option>
-                                                <option value="9">October</option>
-                                                <option value="10">November</option>
-                                                <option value="11">December</option>
-                                            </select>
-                                            ,
-                                            <input style="width: 55px" type="number" v-model="sourceCreatedAfter.year" min="2019" max="2100">
-                                        </div>
+                                        <time-input v-model="sourceCreatedBefore"></time-input>
                                     </template>
                                 </td>
                             </tr>
@@ -222,11 +176,13 @@ center.status {
 import { api } from '../utils'
 import { apiRoot } from '../constants'
 import TagInput from '../components/TagInput'
+import TimeInput from '../components/TimeInput'
 
 export default {
     name: 'EditList',
     components: {
-        'tag-input': TagInput
+        'tag-input': TagInput,
+        'time-input': TimeInput
     },
     mounted() {
         this.init()
@@ -237,6 +193,7 @@ export default {
     },
     data() {
         return {
+            ding: null,
             list: {},
             name: '',
             description: '',
@@ -244,22 +201,10 @@ export default {
             type: 0,
             sourceTags: '',
             sourceExcludeTags: '',
-            sourceCreatedBefore: {
-                specific: 'false',
-                minute: '00',
-                hour: '00',
-                day: '01',
-                month: '0',
-                year: '2020'
-            },
-            sourceCreatedAfter: {
-                specific: 'false',
-                minute: '00',
-                hour: '00',
-                day: '01',
-                month: '0',
-                year: '2020'
-            },
+            sourceCreatedBeforeSpecific: 'false',
+            sourceCreatedBefore: null,
+            sourceCreatedAfterSpecific: 'false',
+            sourceCreatedAfter: null,
             mime: {
                 specific: 'false',
                 mime: '*'
@@ -298,24 +243,16 @@ export default {
                     this.mime.mime = resp.source_mime
                 }
                 if(resp.source_created_before != null) {
-                    this.sourceCreatedBefore.specific = true
+                    this.sourceCreatedBeforeSpecific = true
 
                     let date = new Date(Date.parse(resp.source_created_before))
-                    this.sourceCreatedBefore.minute = date.getMinutes()
-                    this.sourceCreatedBefore.hour = date.getHours()
-                    this.sourceCreatedBefore.day = date.getDate()
-                    this.sourceCreatedBefore.month = date.getMonth()
-                    this.sourceCreatedBefore.year = date.getFullYear()
+                    this.sourceCreatedBefore = date.toISOString()
                 }
                 if(resp.source_created_after != null) {
-                    this.sourceCreatedAfter.specific = true
+                    this.sourceCreatedAfterSpecific = true
 
                     let date = new Date(Date.parse(resp.source_created_after))
-                    this.sourceCreatedAfter.minute = date.getMinutes()
-                    this.sourceCreatedAfter.hour = date.getHours()
-                    this.sourceCreatedAfter.day = date.getDate()
-                    this.sourceCreatedAfter.month = date.getMonth()
-                    this.sourceCreatedAfter.year = date.getFullYear()
+                    this.sourceCreatedAfter = date.toISOString()
                 }
 
                 this.loading = false
@@ -333,13 +270,13 @@ export default {
             var beforeDate;
             var afterDate;
             try {
-                if(this.sourceCreatedBefore.specific) {
-                    beforeDate = new Date(this.sourceCreatedBefore.year*1, this.sourceCreatedBefore.month*1, this.sourceCreatedBefore.day*1, this.sourceCreatedBefore.hour*1, this.sourceCreatedBefore.minute*1, 0)
+                if(this.sourceCreatedBeforeSpecific) {
+                    beforeDate = new Date(this.sourceCreatedBefore)
                     beforeDate.setMilliseconds(0)
                     beforeDate.setSeconds(0)
                 }
-                if(this.sourceCreatedAfter.specific) {
-                    afterDate = new Date(this.sourceCreatedAfter.year*1, this.sourceCreatedAfter.month*1, this.sourceCreatedAfter.day*1, this.sourceCreatedAfter.hour*1, this.sourceCreatedAfter.minute*1, 0)
+                if(this.sourceCreatedAfterSpecific) {
+                    afterDate = new Date(this.sourceCreatedAfter)
                     afterDate.setMilliseconds(0)
                     afterDate.setSeconds(0)
                 }
@@ -363,7 +300,7 @@ export default {
                         this.saving = false
                         return
                     }
-                    if((this.sourceCreatedBefore.specific == 'true' && this.sourceCreatedAfter.specific == 'true') && afterDate.getTime() < beforeDate.getTime()) {
+                    if((this.sourceCreatedBeforeSpecific == 'true' && this.sourceCreatedAfterSpecific == 'true') && afterDate.getTime() < beforeDate.getTime()) {
                         this.saveError = 'Source created before time cannot be after the source created after time'
                         this.saving = false
                         return
@@ -374,19 +311,19 @@ export default {
                 if(this.description.trim().length > 0)
                     params.description = this.description.trim()
                 else
-                    ''
+                    undefined
                 if(this.mime.specific == true || this.mime.specific == 'true')
                     params.sourceMime = this.mime.mime.trim()
                 else
-                    params.sourceMime = ''
-                if(this.sourceCreatedBefore.specific == true || this.sourceCreatedBefore.specific == 'true')
+                    params.sourceMime = undefined
+                if(this.sourceCreatedBeforeSpecific == true || this.sourceCreatedBeforeSpecific == 'true')
                     params.sourceCreatedBefore = beforeDate.toISOString()
                 else
-                    params.sourceCreatedBefore = ''
-                if(this.sourceCreatedAfter.specific == true || this.sourceCreatedAfter.specific == 'true')
+                    params.sourceCreatedBefore = undefined
+                if(this.sourceCreatedAfterSpecific == true || this.sourceCreatedAfterSpecific == 'true')
                     params.sourceCreatedAfter = afterDate.toISOString()
                 else
-                    params.sourceCreatedAfter = ''
+                    params.sourceCreatedAfter = undefined
                 
                 var tags = []
                 // Enumerate tags
