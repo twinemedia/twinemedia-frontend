@@ -279,7 +279,7 @@ tr td:nth-child(1) {
     display: inline-block;
 }
 .file-preview {
-    z-index: 0;
+    z-index: 0 !important;
     margin-left: 10px;
     margin-right: 10px;
     min-width: 300px;
