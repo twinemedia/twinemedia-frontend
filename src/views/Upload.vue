@@ -117,7 +117,7 @@ export default {
         upload: UploadProgress
     },
     methods: {
-        uploadFile(file) {
+        async uploadFile(file) {
             // Check size
             if(file.size > this.maxUpload) {
                 alert(`Size of file "${file.name}" exceeds max upload size of ${this.$root.formatSize(this.maxUpload)}`)
@@ -126,9 +126,6 @@ export default {
 
             var form = new FormData()
             form.append('file', file)
-
-            /*eslint no-console: ["error", { allow: ["warn", "error"] }] */
-            console.warn(file)
 
             this.uploads.push({
                 name: file.name,
@@ -139,36 +136,49 @@ export default {
                 finished: false
             })
             var upl = this.uploads[this.uploads.length-1]
-            axios.post(
-                apiRoot+'media/upload',
-                form,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': 'Bearer '+api.token()
-                    },
-                    onUploadProgress(e) {
-                        upl.progress = Math.round( ( e.loaded / e.total ) * 100)
-                    }
+
+            try {
+                // Check if token is expired
+                var testRes = await api.get(apiRoot+'account/info')
+
+                if(testRes.status != 'success') {
+                    // There was an issue, probably expired token
+                    upl.error = `Authentication failed, try reloading the tab (${testRes.error})`
+                    return
                 }
-            ).then(function(r) {
-                var resp = r.data
+
+                // Upload file
+                var resp = (await axios.post(
+                    apiRoot+'media/upload',
+                    form,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': 'Bearer '+api.token()
+                        },
+                        onUploadProgress(e) {
+                            upl.progress = Math.round( ( e.loaded / e.total ) * 100)
+                        }
+                    }
+                )).data
+
+                // Make sure all is well
                 if(resp.status == 'success') {
-                    upl.id = r.data.id
+                    upl.id = resp.id
                     upl.finished = true
                 } else {
                     upl.error = resp.error
                 }
-            })
-            .catch(function(err) {
+            } catch(err) {
                 upl.error = err
-            })
+            }
         },
         uploadFiles() {
             var files = this.$refs.files.files
 
             for(let i = 0; i < files.length; i++)
                 this.uploadFile(files[i])
+
             this.$refs.files.value = null
         }
     },
