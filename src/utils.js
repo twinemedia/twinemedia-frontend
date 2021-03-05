@@ -42,8 +42,10 @@ export const api = {
 		if(json) {
 			let params = '?'
 			Object.keys(json).forEach(key => {
-				if(params.length > 1) params+='&'
-				params+=encodeURIComponent(key)+'='+encodeURIComponent(json[key])
+				if(json[key] != undefined) {
+					if(params.length > 1) params+='&'
+					params+=encodeURIComponent(key)+'='+encodeURIComponent(json[key])
+				}
 			})
 			resp = await fetch(url+params, {
 				method: 'GET',
@@ -65,18 +67,13 @@ export const api = {
 	post: async function(url, json) {
 		let resp
 		if(json) {
-			let params = ''
-			Object.keys(json).forEach(key => {
-				if(params.length > 1) params+='&'
-				params+=encodeURIComponent(key)+'='+encodeURIComponent(json[key])
-			})
 			resp = await fetch(url, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
+					'Content-Type': 'application/json',
 					'Authorization': this.token() == null ? 'None' : 'Bearer '+this.token()
 				},
-				body: params
+				body: JSON.stringify(json)
 			})
 		} else {
 			resp = await fetch(url, {
