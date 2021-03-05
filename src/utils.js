@@ -1,13 +1,33 @@
+/**
+ * API utility
+ */
 export const api = {
+	/**
+	 * Returns the current auth token
+	 * @returns {string} The current auth token
+	 */
 	token() {
 		return localStorage.getItem('token')
 	},
+	/**
+	 * Returns the data stored inside the current auth token
+	 * @returns {Object} The current auth token's data
+	 */
 	tokenData() {
 		return JSON.parse(atob(this.token().split('.')[1]))
 	},
+	/**
+	 * Returns the current auth token's associated account ID
+	 * @returns {number} The current auth token's associated account ID
+	 */
 	tokenId() {
 		return this.tokenData().id
 	},
+	/**
+	 * Returns whether the user has the specified permission
+	 * @param {string} permission The permission to check for
+	 * @returns {boolean} Whether the user has the specified permissions
+	 */
 	hasPermission(permission) {
 		if(Window.vue) {
 			var acc = Window.vue.account || { permissions: [] }
@@ -37,6 +57,12 @@ export const api = {
 
 		return has
 	},
+	/**
+	 * Sends a GET request with optional serialized query parameters
+	 * @param {string} url The URL to GET
+	 * @param {Object} json The data to send serialized as query parameters (optional)
+	 * @returns {Object} The parsed JSON response
+	 */
 	get: async function(url, json) {
 		let resp
 		if(json) {
@@ -64,6 +90,12 @@ export const api = {
 	
 		return await resp.json()
 	},
+	/**
+	 * Sends a POST request with optional serialized JSON body
+	 * @param {string} url The URL to POST
+	 * @param {Object} json The data to send as a JSON body (optional)
+	 * @returns {Object} The parsed JSON response
+	 */
 	post: async function(url, json) {
 		let resp
 		if(json) {
@@ -86,7 +118,48 @@ export const api = {
 	
 		return await resp.json()
 	}
-};
+}
+
+/**
+ * Sleeps for the specified number of milliseconds
+ * @param {number} ms The amount of milliseconds to sleep
+ */
 export function sleep(ms) {
 	return new Promise((res) => setTimeout(res, ms))
+}
+
+/**
+ * Converts an asterisk string (e.g. "video/*") into a query string (e.g. "video/%")
+ * @param {string} asteriskString The asterisk string to convert
+ * @returns {string} The corresponding query string generated from the asterisk string
+ */
+export function asteriskStringToQueryString(asteriskString) {
+	return asteriskString
+		.replaceAll('%', '\\%')
+		.replaceAll('*', '%')
+}
+
+/**
+ * Converts a query string (e.g. "video/%") into an asterisk string (e.g. "video/*")
+ * @param {string} queryString The query string to convert
+ * @returns {string} The corresponding asterisk string generated from the query string
+ */
+export function queryStringToAsteriskString(queryString) {
+	var newStr = ''
+
+	for(var i = 0; i < queryString.length; i++) {
+		var char = queryString[i]
+		var next = i+1 < queryString.length ? queryString[i+1] : null
+
+		if(char == '\\' && next == '%') { // Check for \%
+			newStr += '%'
+			i++
+		} else if(char == '%') { // Check for %
+			newStr += '*'
+		} else { // Normal
+			newStr += char
+		}
+	}
+
+	return newStr
 }
