@@ -53,7 +53,7 @@
                             </select>
                             <template v-if="mimePreset == 'custom'">
                                 <br><br>
-                                <input style="width: 180px;" type="text" v-model="mime" placeholder="e.g. video/*" />
+                                <input style="width: 180px;" type="text" v-model="mimeParsed" placeholder="e.g. video/*" />
                             </template>
                         </div>
                         <div class="option">
@@ -154,8 +154,8 @@ table {
 </style>
 
 <script>
+import { api, sleep, asteriskStringToQueryString, queryStringToAsteriskString } from '../utils'
 import { apiRoot } from '../constants'
-import { api, sleep } from '../utils'
 import FileListing from '../components/FileListing.vue'
 
 export default {
@@ -166,7 +166,7 @@ export default {
             loading: false,
             files: [],
             order: Window.vue.searchOrder || '0',
-            mime: Window.vue.searchMime || '*',
+            mime: Window.vue.searchMime || '%',
             optionsShown: false,
             currentPage: 0,
             searchTerm: '',
@@ -178,6 +178,16 @@ export default {
                 description: true
             },
             mimePreset: 'any'
+        }
+    },
+    computed: {
+        mimeParsed: {
+            get() {
+                return queryStringToAsteriskString(this.mime)
+            },
+            set(val) {
+                this.mime = asteriskStringToQueryString(val)
+            }
         }
     },
     beforeDestroy() {
@@ -223,7 +233,7 @@ export default {
                         offset: this.currentPage*50 || 0,
                         limit: 50,
                         order: this.order,
-                        mime: this.mime.replace(/\*/g, '%'),
+                        mime: this.mime || '%',
                         searchNames: this.searchItems.name,
                         searchFilenames: this.searchItems.filename,
                         searchTags: this.searchItems.tag,
@@ -245,13 +255,13 @@ export default {
         },
         updateMimePreset() {
             if(this.mimePreset == 'any')
-                this.mime = '*'
+                this.mime = '%'
             else if(this.mimePreset == 'images')
-                this.mime = 'image/*'
+                this.mime = 'image/%'
             else if(this.mimePreset == 'videos')
-                this.mime = 'video/*'
+                this.mime = 'video/%'
             else if(this.mimePreset == 'audio')
-                this.mime = 'audio/*'
+                this.mime = 'audio/%'
             else if(this.mimePreset == 'custom')
                 this.mime = ''
 

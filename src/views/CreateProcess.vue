@@ -8,7 +8,7 @@
                 <form @submit.prevent="create()">
                     <b>MIME Type</b>
                     <br><br>
-                    <td><input @keyup="updateMime()" placeholder="MIME (e.g. video/mp4)" type="text" v-model="mime" /></td>
+                    <td><input @keyup="updateMime()" placeholder="MIME (e.g. video/mp4, supports * wildcards)" type="text" v-model="mimeParsed" /></td>
                     <br>
                     <template v-if="type == 2">
                         <br><br>
@@ -61,7 +61,7 @@ input[type="text"], input[type="password"] {
 </style>
 
 <script>
-import { api } from '../utils'
+import { api, asteriskStringToQueryString, queryStringToAsteriskString } from '../utils'
 import { apiRoot } from '../constants'
 import MediaSettingsEditor from '../components/MediaSettingsEditor'
 
@@ -75,6 +75,16 @@ export default {
             settings: {},
             creating: false,
             error: null
+        }
+    },
+    computed: {
+        mimeParsed: {
+            get() {
+                return queryStringToAsteriskString(this.mime)
+            },
+            set(val) {
+                this.mime = asteriskStringToQueryString(val)
+            }
         }
     },
     components: {

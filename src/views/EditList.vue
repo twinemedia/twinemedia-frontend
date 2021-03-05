@@ -94,13 +94,13 @@
                             <tr>
                                 <td>Source MIME Type</td>
                                 <td>
-                                    <select v-model="mime.specific">
+                                    <select v-model="mimeSpecific">
                                         <option value="true">Specific Type</option>
                                         <option value="false">Any Type</option>
                                     </select>
                                     <br><br>
-                                    <template v-if="mime.specific == true || mime.specific == 'true'">
-                                        <input placeholder="MIME Type (supports * wildcards)" type="text" v-model="mime.mime">
+                                    <template v-if="mimeSpecific == true || mimeSpecific == 'true'">
+                                        <input placeholder="MIME Type (supports * wildcards)" type="text" v-model="mimeParsed">
                                     </template>
                                 </td>
                             </tr>
@@ -173,7 +173,7 @@ center.status {
 </style>
 
 <script>
-import { api } from '../utils'
+import { api, asteriskStringToQueryString, queryStringToAsteriskString } from '../utils'
 import { apiRoot } from '../constants'
 import TagInput from '../components/TagInput'
 import TimeInput from '../components/TimeInput'
@@ -205,14 +205,22 @@ export default {
             sourceCreatedBefore: null,
             sourceCreatedAfterSpecific: 'false',
             sourceCreatedAfter: null,
-            mime: {
-                specific: 'false',
-                mime: '*'
-            },
+            mimeSpecific: 'false',
+            mime: '*',
             loading: true,
             saving: false,
             error: null,
             saveError: null
+        }
+    },
+    computed: {
+        mimeParsed: {
+            get() {
+                return queryStringToAsteriskString(this.mime)
+            },
+            set(val) {
+                this.mime = asteriskStringToQueryString(val)
+            }
         }
     },
     methods: {
@@ -239,8 +247,8 @@ export default {
                 if(resp.source_exclude_tags)
                     this.sourceExcludeTags = resp.source_exclude_tags.join(' ')
                 if(resp.source_mime != null) {
-                    this.mime.specific = true
-                    this.mime.mime = resp.source_mime
+                    this.mimeSpecific = true
+                    this.mime = resp.source_mime
                 }
                 if(resp.source_created_before != null) {
                     this.sourceCreatedBeforeSpecific = true
@@ -295,7 +303,7 @@ export default {
                 }
 
                 if(this.type == 1) {
-                    if(this.mime.specific && this.mime.mime.trim().length < 1) {
+                    if(this.mimeSpecific && this.mime.trim().length < 1) {
                         this.saveError = 'MIME type must not be blank'
                         this.saving = false
                         return
@@ -312,8 +320,8 @@ export default {
                     params.description = this.description.trim()
                 else
                     undefined
-                if(this.mime.specific == true || this.mime.specific == 'true')
-                    params.sourceMime = this.mime.mime.trim().replace('*', '%')
+                if(this.mimeSpecific == true || this.mimeSpecific == 'true')
+                    params.sourceMime = this.mime.trim()
                 else
                     params.sourceMime = undefined
                 if(this.sourceCreatedBeforeSpecific == true || this.sourceCreatedBeforeSpecific == 'true')

@@ -40,7 +40,7 @@
                         </tr>
                         <tr v-for="process in processes" :key="process.id">
                             <td>
-                                <router-link :to="'/process/'+process.id">{{ process.mime }}</router-link>
+                                <router-link :to="'/process/'+process.id">{{ queryStringToAsteriskString(process.mime) }}</router-link>
                             </td>
                             <td>{{ process.settings.extension }}</td>
                             <td>
@@ -88,7 +88,7 @@ table {
 </style>
 
 <script>
-import { api } from '../utils'
+import { api, queryStringToAsteriskString } from '../utils'
 import { apiRoot } from '../constants'
 
 export default {
@@ -112,6 +112,7 @@ export default {
         this.init()
     },
     methods: {
+        queryStringToAsteriskString,
         async init() {
             if(this.$route.params.page) {
                 this.currentPage = (this.$route.params.page*1)-1

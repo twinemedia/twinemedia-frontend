@@ -34,7 +34,7 @@
                         <b>MIME Type</b>
                         <br><br>
                         <td>
-                            <input v-if="canEdit" @keyup="updateMime()" placeholder="MIME (e.g. video/mp4)" type="text" v-model="mime" />
+                            <input v-if="canEdit" @keyup="updateMime()" placeholder="MIME (e.g. video/mp4, supports * wildcards)" type="text" v-model="mimeParsed" />
                             <input v-else placeholder="MIME (e.g. video/mp4)" type="text" v-model="mime" disabled />
                         </td>
                         <br>
@@ -101,7 +101,7 @@ button {
 </style>
 
 <script>
-import { api } from '../utils'
+import { api, asteriskStringToQueryString, queryStringToAsteriskString } from '../utils'
 import { apiRoot } from '../constants'
 import MediaSettingsEditor from '../components/MediaSettingsEditor'
 
@@ -124,6 +124,16 @@ export default {
             creatorName: null,
             createdOn: null,
             canEdit: false
+        }
+    },
+    computed: {
+        mimeParsed: {
+            get() {
+                return queryStringToAsteriskString(this.mime)
+            },
+            set(val) {
+                this.mime = asteriskStringToQueryString(val)
+            }
         }
     },
     components: {
