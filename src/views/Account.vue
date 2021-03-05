@@ -91,7 +91,7 @@
                                 <br>
                                 <tr>
                                     <td>Administrator</td>
-                                    <td>{{ account.admin != 'false' ? 'Yes' : 'No' }}</td>
+                                    <td>{{ account.admin ? 'Yes' : 'No' }}</td>
                                 </tr>
                                 <br>
                                 <tr>
@@ -107,7 +107,7 @@
                                 <tr>
                                     <td>Permissions</td>
                                     <td>
-                                        <template v-if="account.admin != 'false'">
+                                        <template v-if="account.admin">
                                             All permissions
                                         </template>
                                         <template v-else-if="account.permissions.length > 0">
@@ -280,7 +280,7 @@ export default {
                             // Set fields
                             this.account.name = this.edits.name.trim()
                             this.account.email = this.edits.email.trim().toLowerCase()
-                            this.account.admin = this.edits.admin
+                            this.account.admin = this.edits.admin == 'true'
                             this.account.permissions = JSON.parse(params.permissions)
 
                             this.saveError = null
