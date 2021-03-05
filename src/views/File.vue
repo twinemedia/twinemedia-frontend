@@ -403,23 +403,25 @@ export default {
                     if(this.file.processing) {
                         var vm = this
                         setTimeout(function() {
-                            // Listen for progress on processing
-                            vm.progressListenerId = handler('twinemedia.process.'+vm.file.id, function(err, msg) {
-                                var body = msg.body
-                                /*eslint no-console: ["error", { allow: ["warn", "error"] }] */
-                                console.warn(body)
+                            var id = vm.file.id
 
-                                if(err) {
-                                    alert('Error receiving websocket progress event: '+err)
-                                } else {
-                                    if(body.status == 'progress') {
-                                        vm.processProgress = body.percent
-                                    } else if(body.status == 'error') {
-                                        vm.processError = body.error
-                                    } else if(body.status == 'success') {
-                                        // Reload page
-                                        removeHandler(this.progressListenerId)
-                                        vm.init()
+                            // Listen for progress on processing
+                            vm.progressListenerId = handler('twinemedia.process.'+id, function(err, msg) {
+                                if(id == vm.file.id) {
+                                    var body = msg.body
+
+                                    if(err) {
+                                        alert('Error receiving websocket progress event: '+err)
+                                    } else {
+                                        if(body.status == 'progress') {
+                                            vm.processProgress = body.percent
+                                        } else if(body.status == 'error') {
+                                            vm.processError = body.error
+                                        } else if(body.status == 'success') {
+                                            // Reload page
+                                            removeHandler(this.progressListenerId)
+                                            vm.init()
+                                        }
                                     }
                                 }
                             })
