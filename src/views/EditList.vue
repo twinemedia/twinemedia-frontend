@@ -300,8 +300,8 @@ export default {
                         this.saving = false
                         return
                     }
-                    if((this.sourceCreatedBeforeSpecific == 'true' && this.sourceCreatedAfterSpecific == 'true') && afterDate.getTime() < beforeDate.getTime()) {
-                        this.saveError = 'Source created before time cannot be after the source created after time'
+                    if((this.sourceCreatedBeforeSpecific == 'true' && this.sourceCreatedAfterSpecific == 'true') && afterDate.getTime() > beforeDate.getTime()) {
+                        this.saveError = 'Source created before time cannot be before the source created after time'
                         this.saving = false
                         return
                     }
@@ -313,7 +313,7 @@ export default {
                 else
                     undefined
                 if(this.mime.specific == true || this.mime.specific == 'true')
-                    params.sourceMime = this.mime.mime.trim()
+                    params.sourceMime = this.mime.mime.trim().replace('*', '%')
                 else
                     params.sourceMime = undefined
                 if(this.sourceCreatedBeforeSpecific == true || this.sourceCreatedBeforeSpecific == 'true')
