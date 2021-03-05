@@ -50,17 +50,19 @@
                                 <option value="1">Previews</option>
                             </select>
                         </div>
-                        <div class="option" v-if="($root.hasPermission('lists.edit') && list.creator == $root.account.id) || ($root.hasPermission('lists.edit.all') && list.creator != $root.account.id)">
-                            Edit List
-                            <br><br>
-                            <router-link :to="'/list/'+this.$route.params.id+'/edit/'"><button>Edit</button></router-link>
-                        </div>
-                        <div class="option" v-if="($root.hasPermission('lists.delete') && list.creator == $root.account.id) || ($root.hasPermission('lists.delete.all') && list.creator != $root.account.id)">
-                            Delete List
-                            <br><br>
-                            <button v-if="deleting" disabled>Deleting...</button>
-                            <button v-else @click="deleteList(list.id)">Delete</button>
-                        </div>
+                        <template v-if="canAdd">
+                            <div class="option">
+                                Edit List
+                                <br><br>
+                                <router-link :to="'/list/'+this.$route.params.id+'/edit/'"><button>Edit</button></router-link>
+                            </div>
+                            <div class="option">
+                                Delete List
+                                <br><br>
+                                <button v-if="deleting" disabled>Deleting...</button>
+                                <button v-else @click="deleteList(list.id)">Delete</button>
+                            </div>
+                        </template>
                     </div>
                 </div>
             <br><br>
@@ -84,7 +86,7 @@
                     <template v-if="displayType == 1">
                         <template v-for="file in files">
                             <file-listing :key="file.id" :file="file" display="preview" :addable="list.type == 1 && ($root.hasPermission('lists.add') || $root.hasPermission('lists.remove'))">
-                                <template v-if="list.type == 0 && (($root.hasPermission('lists.add') && list.creator == $root.account.id) || ($root.hasPermission('lists.edit.all') && list.creator != $root.account.id))">
+                                <template v-if="list.type == 0 && (canAdd)">
                                     <a v-if="removing[file.id]" href="" @click.prevent="">Removing...</a>
                                     <a v-else href="" @click.prevent="remove(file.id)">Remove</a>
                                 </template>
@@ -116,7 +118,14 @@
                 </template>
                 <template v-else>
                     <h2>List Empty</h2>
-                    <p v-if="list.type == 0">Add some files to it and they will be shown here</p>
+                    <p v-if="list.type == 0">
+                        <template v-if="canAdd">
+                            Add some files to it and they will be shown here
+                        </template>
+                        <template v-else>
+                            Files will show up here when the list owner adds some
+                        </template>
+                    </p>
                     <p v-if="list.type == 1">The search performed based on the source settings for this list turned up empty</p>
                 </template>
             </div>
@@ -184,6 +193,13 @@ export default {
             mime: Window.vue.searchMime || '*',
             displayType: Window.vue.displayType || '1',
             currentPage: 0
+        }
+    },
+    computed: {
+        canAdd() {
+            return  (this.$root.hasPermission('lists.edit') && this.list.creator == this.$root.account.id)
+                    ||
+                    (this.$root.hasPermission('lists.edit.all') && this.list.creator != this.$root.account.id)
         }
     },
     beforeDestroy() {
