@@ -31,18 +31,16 @@
                                         <td>Email</td>
                                         <td><input placeholder="Email" type="text" v-model="edits.email" /></td>
                                     </tr>
-                                    <template v-if="userAdmin && userId != account.id">
-                                        <br>
-                                        <tr>
-                                            <td>Administrator</td>
-                                            <td>
-                                                <select v-model="edits.admin">
-                                                    <option value="true">Yes</option>
-                                                    <option value="false">No</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </template>
+                                    <br>
+                                    <tr>
+                                        <td>Administrator</td>
+                                        <td>
+                                            <select v-model="edits.admin">
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </td>
+                                    </tr>
                                     <br>
                                     <tr>
                                         <td>Permissions (space separated)</td>
@@ -121,7 +119,8 @@
                                     </td>
                                 </tr>
                             </table>
-                            <button v-if="$root.hasPermission('accounts.edit') && (!account.admin || userAdmin)" @click="editing = true">Edit Account</button>
+                            <router-link v-if="account.id == userId" to="/account/self"><button>Go to My Account to edit</button></router-link>
+                            <button v-else-if="$root.hasPermission('accounts.edit') && (!account.admin || userAdmin)" @click="editing = true">Edit Account</button>
                             <template v-if="userAdmin && account.id != userId">
                                 <button v-if="deleting" disabled>Deleting...</button>
                                 <button v-else @click="deleteAccount()">Delete Account</button>
