@@ -163,3 +163,43 @@ export function queryStringToAsteriskString(queryString) {
 
 	return newStr
 }
+
+/**
+ * Generates a title based on the provided filename
+ * @param {string} filename The filename to generate a title from
+ * @returns {string} The generated title
+ */
+export function filenameToTitle(filename) {
+	var name = filename
+
+	// Cut off extension if present
+	if(filename.lastIndexOf('.') > 0)
+		name = filename.substring(0, filename.lastIndexOf('.'))
+
+	// Replace underscores and dashes with spaces with spaces
+	name = name
+			.replaceAll('_', ' ')
+			.replace(/-(?! )/g, ' ')
+
+	// Capitalize first letter
+	name = name[0].toUpperCase()+name.substring(1)
+
+	return name.trim()
+}
+
+/**
+ * Copies the provided text to the user's clipboard.
+ * Note that this function must be run inside of a user-generated event or it will not work.
+ * @param {string} text The text to copy to the user's clipboard
+ */
+export function clipboardCopy(text) {
+	var elem = document.createElement('input');
+	document.body.appendChild(elem)
+	
+	elem.style.position = 'fixed'
+	elem.value = text
+	elem.select()
+	elem.setSelectionRange(0, 99999)
+	document.execCommand('copy')
+	document.body.removeChild(elem)
+}

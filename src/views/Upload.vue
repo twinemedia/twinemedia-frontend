@@ -147,6 +147,9 @@ export default {
                     return
                 }
 
+                // Show upload widget
+                Window.vue.uploadsWidgetVisible = true
+
                 // Upload file
                 var resp = (await axios.post(
                     apiRoot+'media/upload',
