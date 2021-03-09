@@ -20,15 +20,23 @@
                             </tr>
                             <br>
                             <tr>
-                                <td>Password (leave blank to leave unchanged)</td>
-                                <td><input placeholder="Password" type="password" v-model="password" /></td>
+                                <td>Current Password</td>
+                                <td><input placeholder="Current password" type="password" v-model="currentPassword"></td>
                             </tr>
                             <br>
                             <tr>
-                                <td>Confirm Password</td>
-                                <td><input placeholder="Password" type="password" v-model="passwordConfirm" /></td>
+                                <td>New Password<template v-if="!password"> (leave blank to keep existing password)</template></td>
+                                <td><input placeholder="New Password" type="password" v-model="password" /></td>
                             </tr>
-                            <br><br>
+                            <br>
+                            <template v-if="password">
+                                <tr>
+                                    <td>Confirm Password</td>
+                                    <td><input placeholder="Confirm Password" type="password" v-model="passwordConfirm" /></td>
+                                </tr>
+                                <br>
+                            </template>
+                            <br>
                         </table>
                         <template v-if="error">
                             <br><br>
@@ -88,6 +96,7 @@ export default {
             error: null,
             name: Window.vue.account.name,
             email: Window.vue.account.email,
+            currentPassword: '',
             password: '',
             passwordConfirm: ''
         }
@@ -98,48 +107,60 @@ export default {
             this.error = null
 
             // Ensure name isn't blank
-            if(this.name.trim().length > 0) {
-                // Ensure email address is valid
-                if(/.+@.+\..+/g.test(this.email.trim())) {
-                    // Catch all errors
-                    try {
-                        var params = {
-                            name: this.name.trim(),
-                            email: this.email.trim()
-                        }
-
-                        if(this.password.length > 0) {
-                            // Check if passwords match
-                            if(this.password == this.passwordConfirm) {
-                                params.password = this.password
-                            } else {
-                                this.error = 'Passwords must match'
-                                this.saving = false
-                                return
-                            }
-                        }
-
-                        // Send edit POST
-                        var resp = await api.post(apiRoot+'account/self/edit', params)
-
-                        if(resp.status == 'success') {
-                            Window.vue.account.name = this.name
-                            Window.vue.account.email = this.email
-                            this.error = null
-                            this.$router.push('/')
-                        } else if(resp.status == 'error') {
-                            this.error = 'API returned error: '+resp.error
-                        } else {
-                            this.error = 'API returned unknown status "'+resp.status+'"'
-                        }
-                    } catch(err) {
-                        this.error = 'Error saving: '+err
-                    }
-                } else {
-                    this.error = 'Account email must be valid'
-                }
-            } else {
+            if(this.name.trim().length < 1) {
                 this.error = 'Account name must not be blank'
+                this.saving = false
+                return
+            }
+
+            // Ensure current password isn't blank
+            if(this.currentPassword.length < 1) {
+                this.error = 'Current password must not be blank'
+                this.saving = false
+                return
+            }
+
+            // Ensure email address is valid
+            if(!/.+@.+\..+/g.test(this.email.trim())) {
+                this.error = 'Account email must be valid'
+                this.saving = false
+                return
+            }
+
+            // Catch all errors
+            try {
+                var params = {
+                    name: this.name.trim(),
+                    email: this.email.trim(),
+                    currentPassword: this.currentPassword
+                }
+
+                if(this.password.length > 0) {
+                    // Check if passwords match
+                    if(this.password == this.passwordConfirm) {
+                        params.password = this.password
+                    } else {
+                        this.error = 'Passwords must match'
+                        this.saving = false
+                        return
+                    }
+                }
+
+                // Send edit POST
+                var resp = await api.post(apiRoot+'account/self/edit', params)
+
+                if(resp.status == 'success') {
+                    Window.vue.account.name = this.name
+                    Window.vue.account.email = this.email
+                    this.error = null
+                    this.$router.push('/')
+                } else if(resp.status == 'error') {
+                    this.error = 'API returned error: '+resp.error
+                } else {
+                    this.error = 'API returned unknown status "'+resp.status+'"'
+                }
+            } catch(err) {
+                this.error = 'Error saving: '+err
             }
             
             this.saving = false
