@@ -67,12 +67,20 @@
                             <table>
                                 <tr>
                                     <td>Name</td>
-                                    <td><input placeholder="Name" type="text" v-model="edits.name" /></td>
+                                    <td><input placeholder="Name" maxlength="256" type="text" v-model="edits.name" /></td>
+                                </tr>
+                                <br>
+                                <tr>
+                                    <td>Filename</td>
+                                    <td>
+                                        <input placeholder="Filename" :maxlength="extension ? 256-extension.length : 256" type="text" v-model="filename" style="width: calc(100% - 100px)" />
+                                        .{{ extension }}
+                                    </td>
                                 </tr>
                                 <br>
                                 <tr>
                                     <td>Description</td>
-                                    <td><textarea placeholder="Description" v-model="edits.description"></textarea></td>
+                                    <td><textarea placeholder="Description" maxlength="1024" v-model="edits.description"></textarea></td>
                                 </tr>
                                 <br>
                                 <tr>
@@ -360,6 +368,37 @@ export default {
             progressListenerId: null
         }
     },
+    computed: {
+        filename: {
+            get() {
+                if(this.edits) {
+                    if(this.edits.filename.includes('.')) {
+                        return this.edits.filename.substring(0, this.edits.filename.lastIndexOf('.'))
+                    } else {
+                        return this.edits.filename
+                    }
+                } else {
+                    return null
+                }
+            },
+            set(val) {
+                if(this.edits) {
+                    var filename = this.edits.filename
+                    if(filename.includes('.')) {
+                        this.edits.filename = val+filename.substring(filename.lastIndexOf('.'))
+                    } else {
+                        this.edits.filename = filename
+                    }
+                }
+            }
+        },
+        extension() {
+            if(this.edits && this.edits.filename.includes('.'))
+                return this.edits.filename.substring(this.edits.filename.lastIndexOf('.')+1)
+            else
+                return null
+        }
+    },
     components: {
         'file-listing': FileListing,
         'tag-input': TagInput,
@@ -396,6 +435,7 @@ export default {
                 if(this.file) {
                     this.edits = {
                         name: this.file.name,
+                        filename: this.file.filename,
                         description: this.file.description,
                         tags: this.file.tags.join(' ')
                     }
@@ -445,6 +485,8 @@ export default {
                 // Only include params that are not blank/null
                 if(this.edits.name != null)
                     params.name = this.edits.name.trim()
+                if(this.edits.filename != null)
+                    params.filename = this.edits.filename.trim()
                 if(this.edits.description != null)
                     params.description = this.edits.description.trim()
 
@@ -470,6 +512,7 @@ export default {
                 if(resp.status == 'success') {
                     // Set fields
                     this.file.name = this.edits.name
+                    this.file.filename = this.edits.filename
                     this.file.description = this.edits.description ? this.edits.description.trim() : ''
                     this.file.tags = this.edits.tags.split(' ')[0].length < 1 ? [] : this.edits.tags.split(' ')
 
