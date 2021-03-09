@@ -49,7 +49,22 @@
                                             <input v-else placeholder="Permissions (e.g. files.list)" type="text" v-model="edits.permissions" />
                                         </td>
                                     </tr>
-                                    <br><br>
+                                    <br>
+                                    <template v-if="$root.hasPermission('accounts.password')">
+                                        <tr>
+                                            <td>New Password<template v-if="!password"> (leave blank to keep existing password)</template></td>
+                                            <td><input placeholder="New Password" type="password" v-model="edits.password" /></td>
+                                        </tr>
+                                        <br>
+                                        <template v-if="edits.password">
+                                            <tr>
+                                                <td>Confirm Password</td>
+                                                <td><input placeholder="Confirm Password" type="password" v-model="edits.passwordConfirm" /></td>
+                                            </tr>
+                                            <br>
+                                        </template>
+                                    </template>
+                                    <br>
                                 </table>
                                 <b @click="showingPermissions = !showingPermissions" style="cursor: pointer">
                                     <template v-if="showingPermissions">
@@ -162,7 +177,7 @@ tr td:nth-child(1) {
 button {
     margin-right: 8px;
 }
-input[type="text"] {
+input[type="text"], input[type="password"] {
     width: 100%;
 }
 
@@ -225,7 +240,9 @@ export default {
                         name: this.account.name,
                         email: this.account.email,
                         admin: this.account.admin,
-                        permissions: this.account.permissions.join(' ')
+                        permissions: this.account.permissions.join(' '),
+                        password: '',
+                        passwordConfirm: ''
                     }
                 
                 this.loading = false
@@ -235,73 +252,86 @@ export default {
         },
         async save() {
             this.saving = true
-            this.error = false
+            this.saveError = false
             var id = this.$route.params.id
 
             // Ensure name isn't blank
-            if(this.edits.name.trim().length > 0) {
-                // Ensure email address is valid
-                if(/.+@.+\..+/g.test(this.edits.email.trim())) {
-                    // Catch all errors
-                    try {
-                        var params = {}
-                        
-                        // Only include params that are not blank/null
-                        if(this.edits.name && this.edits.name.trim().length > 0)
-                            params.name = this.edits.name.trim()
-                        if(this.edits.email && this.edits.email.trim().length > 0)
-                            params.email = this.edits.email.trim().toLowerCase()
+            if(this.edits.name.trim().length < 1) {
+                this.saveError = 'Account name must not be blank'
+                this.saving = false
+                return
+            }
 
-                        // Collect permissions
-                        var perms = this.edits.permissions.trim().split(' ')
-                        if(perms[0].length < 1)
-                            perms = []
-                        params.permissions = []
+            // Ensure email address is valid
+            if(!/.+@.+\..+/g.test(this.edits.email.trim())) {
+                this.saveError = 'Current password must not be blank'
+                this.saving = false
+                return
+            }
 
-                        if(this.edits.admin == 'false' || this.edits.admin == false) {
-                            for(let i = 0; i < perms.length; i++) {
-                                if(!params.permissions.includes(perms[i].trim().toLowerCase()))
-                                    params.permissions.push(perms[i].trim().toLowerCase())
-                            }
-                        }
+            // Catch all errors
+            try {
+                var params = {}
 
-                        this.edits.permissions = params.permissions.join(' ')
-                        params.permissions = JSON.stringify(params.permissions)
-
-                        // Only include administrator value if user is an admin
-                        if(Window.vue.account.admin)
-                            params.admin = this.edits.admin
-
-                        // Send edit POST
-                        var resp = await api.post(apiRoot+'account/'+id+'/edit', params)
-
-                        if(resp.status == 'success') {
-                            // Set fields
-                            this.account.name = this.edits.name.trim()
-                            this.account.email = this.edits.email.trim().toLowerCase()
-                            this.account.admin = this.edits.admin == 'true'
-                            this.account.permissions = JSON.parse(params.permissions)
-
-                            this.saveError = null
-                            this.saving = false
-                            this.editing = false
-                        } else if(resp.status == 'error') {
-                            this.saveError = resp.error
-                            this.saving = false
-                        } else {
-                            this.saveError = 'API returned unknown status "'+resp.status+'"'
-                            this.saving = false
-                        }
-                    } catch(err) {
-                        this.saveError = 'Error saving: '+err
+                if(this.edits.password.length > 0) {
+                    // Check if passwords match
+                    if(this.edits.password == this.edits.passwordConfirm) {
+                        params.password = this.edits.password
+                    } else {
+                        this.saveError = 'Passwords must match'
                         this.saving = false
+                        return
                     }
+                }
+                        
+                // Only include params that are not blank/null
+                if(this.edits.name && this.edits.name.trim().length > 0)
+                    params.name = this.edits.name.trim()
+                if(this.edits.email && this.edits.email.trim().length > 0)
+                    params.email = this.edits.email.trim().toLowerCase()
+
+                // Collect permissions
+                var perms = this.edits.permissions.trim().split(' ')
+                if(perms[0].length < 1)
+                    perms = []
+                params.permissions = []
+
+                if(this.edits.admin == 'false' || this.edits.admin == false) {
+                    for(let i = 0; i < perms.length; i++) {
+                        if(!params.permissions.includes(perms[i].trim().toLowerCase()))
+                            params.permissions.push(perms[i].trim().toLowerCase())
+                    }
+                }
+
+                this.edits.permissions = params.permissions.join(' ')
+                params.permissions = JSON.stringify(params.permissions)
+
+                // Only include administrator value if user is an admin
+                if(Window.vue.account.admin)
+                    params.admin = this.edits.admin
+
+                // Send edit POST
+                var resp = await api.post(apiRoot+'account/'+id+'/edit', params)
+
+                if(resp.status == 'success') {
+                    // Set fields
+                    this.account.name = this.edits.name.trim()
+                    this.account.email = this.edits.email.trim().toLowerCase()
+                    this.account.admin = this.edits.admin == 'true'
+                    this.account.permissions = JSON.parse(params.permissions)
+
+                    this.saveError = null
+                    this.saving = false
+                    this.editing = false
+                } else if(resp.status == 'error') {
+                    this.saveError = resp.error
+                    this.saving = false
                 } else {
-                    this.saveError = 'Account email must be valid'
+                    this.saveError = 'API returned unknown status "'+resp.status+'"'
                     this.saving = false
                 }
-            } else {
-                this.saveError = 'Account name must not be blank'
+            } catch(err) {
+                this.saveError = 'Error saving: '+err
                 this.saving = false
             }
         },

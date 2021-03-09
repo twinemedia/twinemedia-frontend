@@ -29,6 +29,7 @@
                 <p> - accounts.list <i>Allows listing and searching accounts</i></p>
                 <p> - accounts.view <i>Allows viewing account info</i></p>
                 <p> - accounts.edit <i>Allows editing account info and permissions</i></p>
+                <p> - accounts.password <i>Allows changing account passwords</i></p>
                 <p> - accounts.create <i>Allows creating new accounts</i></p>
             </div>
             <div class="permission">
