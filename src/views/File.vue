@@ -158,6 +158,11 @@
                             </tr>
                             <br>
                             <tr>
+                                <td>Last Modified</td>
+                                <td>{{ file.modified_on }}</td>
+                            </tr>
+                            <br>
+                            <tr>
                                 <td>Uploaded By</td>
                                 <template v-if="file.creator_name">
                                     <td><router-link :to="'/account/'+file.creator">{{ file.creator_name }}</router-link></td>
@@ -515,6 +520,7 @@ export default {
                     this.file.filename = this.edits.filename
                     this.file.description = this.edits.description ? this.edits.description.trim() : ''
                     this.file.tags = this.edits.tags.split(' ')[0].length < 1 ? [] : this.edits.tags.split(' ')
+                    this.file.modified_on = new Date().toISOString()
 
                     this.saving = false
                     this.editing = false
