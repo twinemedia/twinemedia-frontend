@@ -16,6 +16,8 @@
                                 <option value="1">Creation date, oldest to newest</option>
                                 <option value="2">Name alphabetically, ascending</option>
                                 <option value="3">Name alphabetically, descending</option>
+                                <option value="4">Last modified, newest to oldest</option>
+                                <option value="5">Last modified, oldest to newest</option>
                             </select>
                         </div>
                         <div class="option">

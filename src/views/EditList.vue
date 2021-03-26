@@ -24,6 +24,16 @@
                         </tr>
                         <br>
                         <tr>
+                            <td>Created On</td>
+                            <td>{{ list.created_on }}</td>
+                        </tr>
+                        <br>
+                        <tr>
+                            <td>Last Modified</td>
+                            <td>{{ list.modified_on }}</td>
+                        </tr>
+                        <br>
+                        <tr>
                             <td>Description</td>
                             <td><textarea maxlength="1024" placeholder="Description" v-model="description"></textarea></td>
                         </tr>
@@ -352,12 +362,14 @@ export default {
                     params.sourceExcludeTags = JSON.stringify(excludeTags)
 
                 var resp = await api.post(apiRoot+'list/'+id+'/edit', params)
-                if(resp.status == 'success')
+                if(resp.status == 'success') {
                     this.$router.push('/list/'+id)
-                else if(resp.status == 'error')
+                    this.list.modified_on = new Date().toISOString()
+                } else if(resp.status == 'error') {
                     this.saveError = 'API returned error: '+resp.error
-                else
+                } else {
                     this.saveError = 'API returned unknown status "'+resp.status+'"'
+                }
             } else {
                 this.saveError = 'List name must not be blank'
             }

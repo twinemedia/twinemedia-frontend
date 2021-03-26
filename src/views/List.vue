@@ -40,6 +40,8 @@
                                 <option value="3">Name alphabetically, descending</option>
                                 <option value="4">Size, largest to smallest</option>
                                 <option value="5">Size, smallest to largest</option>
+                                <option value="6">Date modified, newest to oldest</option>
+                                <option value="7">Date modified, oldest to newest</option>
                             </select>
                         </div>
                         <div class="option">
