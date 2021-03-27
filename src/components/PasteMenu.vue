@@ -306,8 +306,13 @@ export default {
                     upl.finished = true
 
                     // Copy link if specified
-                    if(copyLink)
+                    if(copyLink) {
+                        var link = filesRoot+resp.id+'/'+file.name
+                        if(!link.startsWith('http:') && !link.startsWith('https:'))
+                            link = location.protocol+'//'+location.host+link
+
                         clipboardCopy(filesRoot+resp.id+'/'+file.name)
+                    }
                 } else {
                     upl.error = resp.error
                 }
