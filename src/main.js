@@ -9,6 +9,7 @@ Vue.config.productionTip = false
 
 // Setup Vue
 Window.vue = new Vue({
+    buildTime: new Date(document.body.getAttribute('build-time')),
     router,
     render: function(h) {
         if(!this.sessionFetched) {
