@@ -311,7 +311,7 @@ export default {
                         if(!link.startsWith('http:') && !link.startsWith('https:'))
                             link = location.protocol+'//'+location.host+link
 
-                        clipboardCopy(filesRoot+resp.id+'/'+file.name)
+                        clipboardCopy(link)
                     }
                 } else {
                     upl.error = resp.error
