@@ -308,7 +308,7 @@ export default {
 
                     // Copy link if specified
                     if(copyLink) {
-                        var link = filesRoot+resp.id+'/'+file.name
+                        var link = filesRoot+resp.id+'/'+encodeURIComponent(file.name)
                         if(!link.startsWith('http:') && !link.startsWith('https:'))
                             link = location.protocol+'//'+location.host+link
 
