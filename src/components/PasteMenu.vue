@@ -148,6 +148,7 @@ export default {
 
         // Focus on input
         this.$refs.nameInput.focus()
+        this.$refs.nameInput.select()
     },
     data() {
         return {
