@@ -87,6 +87,16 @@
                                     </select>
                                 </td>
                             </tr>
+                            <br>
+                            <tr>
+                                <td>
+                                    <p>Your current password</p>
+                                    <i>
+                                        Required to change preferences
+                                    </i>
+                                </td>
+                                <td><input v-model="currentPassword" type="password" placeholder="Your current password"></td>
+                            </tr>
                         </table>
                         <template v-if="error">
                             <div class="error">
@@ -162,7 +172,8 @@ export default {
             excludeOtherMedia: this.$root.account.exclude_other_media+'',
             excludeOtherLists: this.$root.account.exclude_other_lists+'',
             excludeOtherTags: this.$root.account.exclude_other_tags+'',
-            excludeOtherProcesses: this.$root.account.exclude_other_processes+''
+            excludeOtherProcesses: this.$root.account.exclude_other_processes+'',
+            currentPassword: ''
         }
     },
     components: {
@@ -181,6 +192,7 @@ export default {
                 var excludeOtherLists = this.excludeOtherLists
                 var excludeOtherTags = this.excludeOtherTags
                 var excludeOtherProcesses = this.excludeOtherProcesses
+                var currentPassword = this.currentPassword
 
                 // Collect tags
                 if(this.excludeTags.trim().length > 0) {
@@ -203,7 +215,8 @@ export default {
                     excludeOtherMedia,
                     excludeOtherLists,
                     excludeOtherTags,
-                    excludeOtherProcesses
+                    excludeOtherProcesses,
+                    currentPassword
                 })
 
                 if(resp.status == 'success') {
