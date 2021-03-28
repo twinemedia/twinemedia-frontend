@@ -226,6 +226,14 @@ const routes = [
         }
     },
     {
+        path: '/info',
+        name: 'build-info',
+        component: () => import(/* webpackChunkName: "build-info" */ '../views/BuildInfo.vue'),
+        meta: {
+            title: 'Build Info | '+appName
+        }
+    },
+    {
         path: '*',
         name: 'not-found',
         component: () => import(/* webpackChunkName: "notfound" */ '../views/NotFound.vue'),
