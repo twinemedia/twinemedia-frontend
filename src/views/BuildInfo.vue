@@ -20,9 +20,6 @@
 .build-info {
     text-align: center;
 }
-.error {
-    color: red;
-}
 </style>
 
 <script>
