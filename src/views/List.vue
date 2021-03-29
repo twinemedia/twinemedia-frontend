@@ -192,7 +192,6 @@ export default {
             collapseDesc: true,
             truncatedDesc: null,
             order: Window.vue.searchOrder || '0',
-            mime: Window.vue.searchMime || '*',
             displayType: Window.vue.displayType || '1',
             currentPage: 0
         }
@@ -206,7 +205,6 @@ export default {
     },
     beforeDestroy() {
         Window.vue.displayType = this.displayType
-        Window.vue.searchMime = this.mime
         Window.vue.searchOrder = this.order
     },
     components: {
