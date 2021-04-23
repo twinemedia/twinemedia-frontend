@@ -17,8 +17,8 @@
                 <template v-if="list.description">
                     <br>
                     <div id="description">
-                        <span v-if="collapseDesc && truncatedDesc" v-html="$root.escapeHtml(truncatedDesc)"></span>
-                        <span v-else v-html="$root.escapeHtml(list.description)"></span>
+                        <span v-if="collapseDesc && truncatedDesc" v-html="escapeHTMLAndLinkifyURLs(truncatedDesc)"></span>
+                        <span v-else v-html="escapeHTMLAndLinkifyURLs(list.description)"></span>
                         <template v-if="truncatedDesc">
                             <br>
                             <a v-if="collapseDesc" href="" @click.prevent="collapseDesc = false">Show more</a>
@@ -172,7 +172,7 @@ tr td:nth-child(1) {
 </style>
 
 <script>
-import { api } from '../utils'
+import { api, escapeHTMLAndLinkifyURLs } from '../utils'
 import { apiRoot } from '../constants'
 import FileListing from '../components/FileListing'
 
@@ -218,6 +218,7 @@ export default {
         this.init()
     },
     methods: {
+        escapeHTMLAndLinkifyURLs,
         async init() {
             var id = this.$route.params.id
 
