@@ -140,7 +140,7 @@
                                 </td>
                             </tr>
                             <br>
-                            <tr v-if="$root.hasPermission('files.view.all')">
+                            <tr v-if="$root.hasPermission('files.list.all')">
                                 <td>Show Files From All Users</td>
                                 <td>
                                     <select v-model="showAllUserFiles">
