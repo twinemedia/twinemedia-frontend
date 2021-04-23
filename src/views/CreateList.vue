@@ -139,6 +139,16 @@
                                     </template>
                                 </td>
                             </tr>
+                            <br>
+                            <tr v-if="$root.hasPermission('files.view.all')">
+                                <td>Show Files From All Users</td>
+                                <td>
+                                    <select v-model="showAllUserFiles">
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </td>
+                            </tr>
                         </template>
                         <br><br>
                     </table>
@@ -238,6 +248,7 @@ export default {
                 specific: 'false',
                 mime: '*'
             },
+            showAllUserFiles: false,
             creating: false,
             error: null
         }
@@ -273,7 +284,8 @@ export default {
                 var params = {
                     name: this.name.trim(),
                     visibility: this.visibility,
-                    type: this.type
+                    type: this.type,
+                    showAllUserFiles: this.showAllUserFiles
                 }
 
                 if(this.type == 1) {

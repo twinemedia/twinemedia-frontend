@@ -114,6 +114,16 @@
                                     </template>
                                 </td>
                             </tr>
+                            <br>
+                            <tr v-if="$root.hasPermission('files.view.all')">
+                                <td>Show Files From All Users</td>
+                                <td>
+                                    <select v-model="showAllUserFiles">
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </td>
+                            </tr>
                         </template>
                         <br><br>
                     </table>
@@ -217,6 +227,7 @@ export default {
             sourceCreatedAfter: null,
             mimeSpecific: 'false',
             mime: '*',
+            showAllUserFiles: 'false',
             loading: true,
             saving: false,
             error: null,
@@ -252,6 +263,7 @@ export default {
                 this.description = resp.description || ''
                 this.visibility = resp.visibility
                 this.type = resp.type
+                this.showAllUserFiles = resp.show_all_user_files
                 if(resp.source_tags)
                     this.sourceTags = resp.source_tags.join(' ')
                 if(resp.source_exclude_tags)
@@ -313,6 +325,7 @@ export default {
                 }
 
                 if(this.type == 1) {
+                    params.showAllUserFiles = this.showAllUserFiles == 'true'
                     if(this.mimeSpecific && this.mime.trim().length < 1) {
                         this.saveError = 'MIME type must not be blank'
                         this.saving = false
