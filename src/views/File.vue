@@ -341,7 +341,7 @@ input[type="text"] {
 </style>
 
 <script>
-import { api } from '../utils'
+import { api, escapeHTMLAndLinkifyURLs } from '../utils'
 import { apiRoot, filesRoot, thumbsRoot } from '../constants'
 import { handler, removeHandler } from '../websocket'
 
@@ -405,8 +405,7 @@ export default {
                 return null
         },
         descriptionHtml() {
-            var regex = /(\b(https?|):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig
-            return this.$root.escapeHtml(this.description).replace(regex, '<a href="$1">$1</a>')
+            return escapeHTMLAndLinkifyURLs(this.description)
         }
     },
     components: {
