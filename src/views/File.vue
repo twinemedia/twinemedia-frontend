@@ -129,7 +129,7 @@
                             <tr>
                                 <td>Description</td>
                                 <td>
-                                    <i v-if="file.description" v-html="$root.escapeHtml(file.description)"></i>
+                                    <i v-if="description" v-html="descriptionHtml"></i>
                                     <template v-else>None</template>
                                 </td>
                             </tr>
@@ -370,7 +370,8 @@ export default {
             childSettings: {},
             processProgress: -1,
             processError: null,
-            progressListenerId: null
+            progressListenerId: null,
+            description: null
         }
     },
     computed: {
@@ -402,6 +403,10 @@ export default {
                 return this.edits.filename.substring(this.edits.filename.lastIndexOf('.')+1)
             else
                 return null
+        },
+        descriptionHtml() {
+            var regex = /(\b(https?|):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig
+            return this.$root.escapeHtml(this.description).replace(regex, '<a href="$1">$1</a>')
         }
     },
     components: {
@@ -438,6 +443,7 @@ export default {
                     this.error = 'API returned unknown status "'+resp.status+'"'
 
                 if(this.file) {
+                    this.description = this.file.description
                     this.edits = {
                         name: this.file.name,
                         filename: this.file.filename,
@@ -519,6 +525,7 @@ export default {
                     this.file.name = this.edits.name
                     this.file.filename = this.edits.filename
                     this.file.description = this.edits.description ? this.edits.description.trim() : ''
+                    this.description = this.file.description
                     this.file.tags = this.edits.tags.split(' ')[0].length < 1 ? [] : this.edits.tags.split(' ')
                     this.file.modified_on = new Date().toISOString()
 
