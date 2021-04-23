@@ -203,3 +203,28 @@ export function clipboardCopy(text) {
 	document.execCommand('copy')
 	document.body.removeChild(elem)
 }
+
+/**
+ * Escapes the provided HTML
+ * @param {string} html The HTML to escape
+ * @returns {string} The escaped HTML
+ */
+export function escapeHTML(html) {
+	return html
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&#34;')
+        .replace(/'/g, '&#39;')
+        .replace(/\n/g, '<br>')
+}
+
+/**
+ * Escapes the provided HTML and processes URLs into <a> links
+ * @param {string} htmlWithURLs The HTML with URLs to escape and process
+ * @returns {string} The escaped and processed HTML
+ */
+export function escapeHTMLAndLinkifyURLs(htmlWithURLs) {
+	var regex = /(\b(https?|):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig
+    return escapeHTML(htmlWithURLs).replace(regex, '<a href="$1">$1</a>')
+}

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 
-import { api } from './utils'
+import { api, escapeHTML } from './utils'
 import { appName } from './constants'
 
 Vue.config.productionTip = false
@@ -65,15 +65,7 @@ Window.vue = new Vue({
 
             return fmt
         },
-        escapeHtml(html) {
-            return html
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&#34;')
-                .replace(/'/g, '&#39;')
-                .replace(/\n/g, '<br>')
-        },
+        escapeHtml: escapeHTML,
         urlEncode(txt) {
             return encodeURI(txt)
         },
