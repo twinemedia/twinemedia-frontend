@@ -343,7 +343,7 @@ input[type="text"] {
 <script>
 import { api, escapeHTMLAndLinkifyURLs } from '../utils'
 import { apiRoot, filesRoot, thumbsRoot } from '../constants'
-import { handler, removeHandler } from '../websocket'
+import { addHandler, removeHandler } from '../websocket'
 
 import FileListing from '../components/FileListing'
 import TagInput from '../components/TagInput'
@@ -420,7 +420,13 @@ export default {
     beforeRouteUpdate(to, from, next) {
         next()
         this.error = null
+        removeHandler(this.progressListenerId)
+        this.progressListenerId = null
         this.init()
+    },
+    beforeDestroy() {
+        removeHandler(this.progressListenerId)
+        this.progressListenerId = null
     },
     methods: {
         encodeURIComponent,
@@ -456,22 +462,16 @@ export default {
                             var id = vm.file.id
 
                             // Listen for progress on processing
-                            vm.progressListenerId = handler('twinemedia.process.'+id, function(err, msg) {
-                                if(id == vm.file.id) {
-                                    var body = msg.body
-
-                                    if(err) {
-                                        alert('Error receiving websocket progress event: '+err)
-                                    } else {
-                                        if(body.status == 'progress') {
-                                            vm.processProgress = body.percent
-                                        } else if(body.status == 'error') {
-                                            vm.processError = body.error
-                                        } else if(body.status == 'success') {
-                                            // Reload page
-                                            removeHandler(this.progressListenerId)
-                                            vm.init()
-                                        }
+                            vm.progressListenerId = addHandler('media_process_progress', function(event) {
+                                if(event.id == id) {
+                                    if(event.status == 'progress') {
+                                        vm.processProgress = event.percent
+                                    } else if(event.status == 'error') {
+                                        vm.processError = event.error
+                                    } else if(event.status == 'success') {
+                                        // Reload page
+                                        removeHandler(vm.progressListenerId)
+                                        vm.init()
                                     }
                                 }
                             })

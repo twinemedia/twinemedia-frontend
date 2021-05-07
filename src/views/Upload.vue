@@ -57,48 +57,8 @@
 <script>
 import { api } from '../utils'
 import { apiRoot } from '../constants'
-import { handler } from '../websocket'
 import axios from 'axios'
 import UploadProgress from '../components/UploadProgress.vue'
-
-var comp = null
-
-// Current uploads picked up by websocket
-handler("twinemedia."+api.tokenId(), function(err, msg) {
-    if(err) {
-        alert('Error occurred while connecting to websocket: '+err)
-    } else {
-        var json = msg.body
-        
-        if(json.type == 'upload') {
-            var uploads = comp.uploads
-            if(json.status == 'new') {
-                // Create new upload
-                uploads[json.id] = {
-                    name: json.filename,
-                    size: json.size,
-                    id: json.id,
-                    progress: 0,
-                    error: null,
-                    finished: false
-                }
-            } else if(json.status == 'progress') {
-                // Update upload progress
-                uploads[json.id].progress = json.percent
-            } else if(json.status == 'finish') {
-                // Mark upload as finished
-                uploads[json.id].progress = 100
-                uploads[json.id].finished = true
-            } else if(json.status == 'error') {
-                // Set upload error message
-                uploads[json.id].error = json.error
-            }
-
-            // Tick 'i' parameter to force render of uploads
-            comp.i++
-        }
-    }
-})
 
 export default {
     name: 'Upload',
@@ -110,8 +70,7 @@ export default {
         }
     },
     mounted() {
-        // Make component available to top-level code
-        comp = this
+        
     },
     components: {
         upload: UploadProgress

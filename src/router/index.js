@@ -273,7 +273,7 @@ router.beforeEach((to, from, next) => {
                         Window.vue.authenticated = true
 
                         // Connect to websocket
-                        await connect()
+                        await connect(localStorage.getItem('token'))
 
                         // Set title
                         document.title = to.meta.title

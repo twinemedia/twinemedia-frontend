@@ -69,7 +69,7 @@ export default {
                         Window.vue.authenticated = true
 
                         // Connect to websocket
-                        await connect()
+                        await connect(localStorage.getItem('token'))
 
                         // Go to homepage or next route
                         if(Window.vue.authTo) {
