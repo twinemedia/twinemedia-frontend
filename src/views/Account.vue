@@ -52,7 +52,7 @@
                                     <br>
                                     <template v-if="$root.hasPermission('accounts.password')">
                                         <tr>
-                                            <td>New Password<template v-if="!password"> (leave blank to keep existing password)</template></td>
+                                            <td>New Password<template v-if="!edits.password"> (leave blank to keep existing password)</template></td>
                                             <td><input placeholder="New Password" type="password" v-model="edits.password" /></td>
                                         </tr>
                                         <br>
