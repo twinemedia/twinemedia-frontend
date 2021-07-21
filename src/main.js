@@ -19,6 +19,7 @@ Window.vue = new Vue({
     },
     data() {
         return {
+            api,
             sessionFetched: false,
             account: null,
             loading: true,
