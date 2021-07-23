@@ -34,6 +34,7 @@ Window.vue = new Vue({
             pasteModalVisible: false,
             uploadsWidgetVisible: false,
             buildTime: new Date(document.body.getAttribute('build-time')),
+            tasks: []
         }
     },
     methods: {
