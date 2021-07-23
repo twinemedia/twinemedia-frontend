@@ -50,6 +50,14 @@
                 <p> - processes.create <i>Allows creating new process presets</i></p>
                 <p> - processes.delete(<i>.all</i>) <i>Allows deleting process presets</i></p>
             </div>
+            <div class="permission">
+                <p><b>sources</b></p>
+                <p> - sources.list(<i>.all</i>) <i>Allows listing all media sources</i></p>
+                <p> - sources.view(<i>.all</i>) <i>Allows viewing media sources and their configurations</i></p>
+                <p> - sources.edit(<i>.all</i>) <i>Allows editing media sources and their configurations</i></p>
+                <p> - sources.create <i>Allows creating new media sources</i></p>
+                <p> - sources.delete(<i>.all</i>) <i>Allows deleting media sources (and therefore removing all indexed files from the application)</i></p>
+            </div>
     </div>
 </template>
 
