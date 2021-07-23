@@ -35,6 +35,10 @@
                 <router-link to="/accounts/create">Create an account</router-link>
                 <br>
             </template>
+            <template v-if="$root.hasPermission('sources.create')">
+                <router-link to="/sources/create">Create a media source</router-link>
+                <br>
+            </template>
             <router-link to="/info">Build info</router-link>
             <br>
         </div>
@@ -63,7 +67,8 @@
     font-size: 20px;
 }
 #links * {
-    margin-bottom: 20px;
+    display: inline-block;
+    margin-bottom: 15px;
     border-bottom: #3e8036 1px solid;
 }
 
