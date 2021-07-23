@@ -234,13 +234,29 @@ const routes = [
         }
     },
     {
+        path: '/sources',
+        name: 'sources',
+        component: () => import(/* webpackChunkName: "sources" */ '../views/Sources.vue'),
+        meta: {
+            title: 'Media Sources | '+appName
+        }
+    },
+    {
+        path: '/sources/:page',
+        name: 'sources-paginated',
+        component: () => import(/* webpackChunkName: "sources-paginated" */ '../views/Sources.vue'),
+        meta: {
+            title: 'Media Sources | '+appName
+        }
+    },
+    {
         path: '*',
         name: 'not-found',
         component: () => import(/* webpackChunkName: "notfound" */ '../views/NotFound.vue'),
         meta: {
             title: 'Not Found | '+appName
         }
-    },
+    }
 ]
 
 const router = new VueRouter({
