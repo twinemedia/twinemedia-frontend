@@ -1,4 +1,5 @@
 import { apiRoot } from './constants'
+import { api } from './utils'
 import SockJS from 'sockjs-client'
 
 /**
@@ -80,6 +81,46 @@ export async function connect(token) {
         }
     }
 
+    // Fetch tasks and keep track of them
+    try {
+        // Fetch initial tasks
+        var res = await api.get(apiRoot+'tasks')
+        Window.vue.tasks = res.tasks
+
+        var rmTask = id => {
+            for(let i = 0; i < Window.vue.tasks.length; i++) {
+                var task = Window.vue.tasks[i]
+
+                if(task.id == id) {
+                    Window.vue.tasks.splice(i, 1)
+                    break
+                }
+            }
+        }
+
+        addHandler('task_create', event => {
+            rmTask(event.id)
+
+            var task = { ...event }
+            delete task.type
+            Window.vue.tasks.push(task)
+        })
+        addHandler('task_delete', event => rmTask(event.id))
+        addHandler('task_update', event => {
+            for(let i = 0; i < Window.vue.tasks.length; i++) {
+                var task = Window.vue.tasks[i]
+
+                if(task.id == event.id) {
+                    var keys = Object.keys(event.state)
+
+                    keys.forEach(key => task[key] = event.state[key])
+                }
+            }
+        })
+    } catch(err) {
+        // Oh well, this can be refreshed later on the tasks page
+    }
+
     return sock
 }
 
@@ -110,7 +151,9 @@ export function addHandler(type, hdlr) {
 export function removeHandler(id) {
     for(let i = 0; i < handlers.length; i++) {
         if(handlers[i].id == id) {
-            handlers.splice(id, 1)
+            alert('Removed ID '+id+', handlers len: '+handlers.length)
+            handlers.splice(i, 1)
+            alert('Now length: '+handlers.length)
             break
         }
     }
