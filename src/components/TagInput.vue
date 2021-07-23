@@ -1,7 +1,7 @@
 <template>
     <div class="tag-input">
         <input ref="tags" :placeholder="placeholder" :disabled="disabled" :value="value" type="text" @input="updateValue()" @focus="focus" @blur="blur" v-on:keydown.38="selectUp" v-on:keydown.40="selectDown" @keyup="checkCursor()" @keydown.enter="insertTag($event)" @keydown.space="insertTag($event)" @keydown.tab="insertTag($event, true)">
-        <div class="tag-chooser" :style="{ display: (tags.length > 0) ? 'block' : 'none' }">
+        <div class="tag-chooser" v-show="tags.length > 0">
             <template v-for="(tag, index) in tags">
                 <span :key="index" @mouseenter="selected = index" @mouseleave="selected = -1" @mousedown="insertTag($event)" :class="[selected == index ? 'tag-selected' : 'tag-unselected']">{{ tag.name }} <span class="tag-uses">({{ tag.files }})</span></span>
                 <br :key="index">
@@ -13,6 +13,7 @@
 <style scoped>
 .tag-chooser {
     position: absolute;
+    display: block;
     background: rgb(15, 15, 15);
     padding: 5px;
     z-index: 99;
