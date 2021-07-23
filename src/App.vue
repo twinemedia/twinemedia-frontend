@@ -16,16 +16,22 @@
                 </template>
                 <template v-if="$root.hasPermission('files.list')">
                     <router-link to="/search">Search</router-link> |
-                    <router-link to="/search/tags/">Tag Search</router-link> |
+                    <router-link to="/search/tags">Tag Search</router-link> |
                 </template>
                 <template v-if="$root.hasPermission('tags.list')">
-                    <router-link to="/tags/">Tags</router-link> |
+                    <router-link to="/tags">Tags</router-link> |
                 </template>
                 <template v-if="$root.hasPermission('lists.list')">
-                    <router-link to="/lists/">Lists</router-link> |
+                    <router-link to="/lists">Lists</router-link> |
                 </template>
                 <template v-if="$root.hasPermission('processes.list')">
-                    <router-link to="/processes/">Process Presets</router-link>
+                    <router-link to="/processes">Process Presets</router-link> |
+                </template>
+                <template v-if="$root.hasPermission('sources.list')">
+                    <router-link to="/sources">Media Sources</router-link>
+                </template>
+                <template v-if="$root.tasks.length > 0">
+                    | <router-link to="/tasks">Tasks ({{ $root.tasks.length }})</router-link>
                 </template>
             </div>
         </div>
