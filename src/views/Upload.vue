@@ -1,5 +1,10 @@
 <template>
-    <div class="upload" v-if="$root.hasPermission('upload')">
+    <center v-if="$root.account.default_source == -1">
+        <h1>No Default Source Selected</h1>
+        <p>You need to select a default source before uploading files.</p>
+        <p v-if="$root.hasPermission('sources.create')">Go to the <router-link to="/sources">sources</router-link> page to select one.</p>
+    </center>
+    <div class="upload" v-else-if="$root.hasPermission('upload')">
         <div id="upload-area">
             <input type="file" id="files" multiple ref="files" @change="uploadFiles"/>
             <center>
