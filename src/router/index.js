@@ -234,6 +234,14 @@ const routes = [
         }
     },
     {
+        path: '/sources/create',
+        name: 'create-source',
+        component: () => import(/* webpackChunkName: "create-source" */ '../views/CreateSource.vue'),
+        meta: {
+            title: 'Create Media Source | '+appName
+        }
+    },
+    {
         path: '/sources',
         name: 'sources',
         component: () => import(/* webpackChunkName: "sources" */ '../views/Sources.vue'),
