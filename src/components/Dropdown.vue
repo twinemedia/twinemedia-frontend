@@ -132,6 +132,8 @@ export default {
         }
     },
     mounted() {
+        this.width = this.$refs.root.clientWidth;
+
         if(this.value) {
             if(this.usingAdvancedInput) {
                 this.filter = this.value.filter
@@ -222,6 +224,7 @@ export default {
         },
         updateFilter() {
             var newFilter = this.$refs.filter.value.trim().toLowerCase()
+            var oldSelection = this.selected
 
             if(newFilter != this.filter) {
                 if(newFilter != '')
@@ -230,8 +233,9 @@ export default {
                 if(this.cursorOn < 1 || this.valuePairs.length <= this.cursorOn)
                     this.cursorOn = 0
                 
-                // Emit new input value
-                this.emitValue()
+                // Emit new input value if using advanced input or if selection changed
+                if(this.usingAdvancedInput || oldSelection != this.selected)
+                    this.emitValue()
             }
         },
         useSelected(e) {
