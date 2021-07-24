@@ -93,7 +93,7 @@ img {
 </style>
 
 <script>
-import Dropdown from '../components/Dropdown'
+import Dropdown from './Dropdown'
 
 export default {
     name: 'MediaSettingsEditor',
