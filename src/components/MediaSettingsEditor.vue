@@ -2,21 +2,21 @@
     <div class="media-settings-editor">
         <p><b>Encode Settings</b></p>
         <label>File Type:</label>
-        <select v-model="extension" @change="updateValue()" :disabled="disabled">
-            <template v-if="type == 'video'">
-                <option value="mp4">MP4</option>
-                <option value="webm">VP9 (Webm)</option>
-                <option value="mkv">Matroska (MKV)</option>
-                <option value="ogv">Ogg Video (OGV)</option>
-            </template>
-            <template v-else>
-                <option value="mp3">MP3</option>
-                <option value="flac">FLAC</option>
-                <option value="wav">Wave (WAV)</option>
-                <option value="aac">AAC</option>
-                <option value="ogg">Ogg Audio (OGA)</option>
-            </template>
-        </select>
+        <dropdown v-model="extension" @change="updateValue()" :disabled="disabled"  placeholder="Choose a type" :values="
+        type == 'video' ?
+            {
+                mp4: 'MP4',
+                webm: 'VP9 (Webm)',
+                mkv: 'Matroska (MKV)',
+                ogv: 'Ogg Video (OGV)'
+            } : {
+                mp3: 'MP3',
+                flac: 'FLAC',
+                wav: 'Wave (WAV)',
+                aac: 'AAC',
+                ogg: 'Ogg Audio (OGA)'
+            }
+        " />
         <template v-if="type == 'video'">
             <p>Frame rate</p>
             <select v-model="originalFramerate" @change="updateFramerate()">
@@ -93,6 +93,8 @@ img {
 </style>
 
 <script>
+import Dropdown from '../components/Dropdown'
+
 export default {
     name: 'MediaSettingsEditor',
     props: ['type', 'metadata', 'thumbnail', 'preset', 'disabled'],
@@ -108,8 +110,11 @@ export default {
             audio_bitrate: 80,
             originalVideoBitrate: 'false',
             video_bitrate: 512,
-            extension: ''
+            extension: null
         }
+    },
+    components: {
+        'dropdown': Dropdown
     },
     mounted() {
         this.extension = this.type == 'video' ? 'mp4' : 'mp3'
@@ -185,14 +190,14 @@ export default {
                     frame_rate: this.frame_rate,
                     audio_bitrate: this.audio_bitrate,
                     video_bitrate: this.video_bitrate,
-                    extension: this.extension,
+                    extension: this.extension || 'mp4',
                     width: this.width,
                     height: this.height
                 })
             } else {
                 this.$emit('input', {
                     audio_bitrate: this.audio_bitrate,
-                    extension: this.extension
+                    extension: this.extension || 'mp3'
                 })
             }
         }
