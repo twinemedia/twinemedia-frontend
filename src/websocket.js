@@ -151,9 +151,7 @@ export function addHandler(type, hdlr) {
 export function removeHandler(id) {
     for(let i = 0; i < handlers.length; i++) {
         if(handlers[i].id == id) {
-            alert('Removed ID '+id+', handlers len: '+handlers.length)
             handlers.splice(i, 1)
-            alert('Now length: '+handlers.length)
             break
         }
     }
