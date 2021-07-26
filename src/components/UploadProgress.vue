@@ -40,6 +40,8 @@
                     <router-link :to="'/file/'+file.id"><button @click.prevent="$router.push('/file/'+file.id)">View</button></router-link>
 
                     <button v-if="$root.hasPermission('lists.add') || $root.hasPermission('lists.remove')" @click.prevent="$root.openListAddDialog(file.id)">Add/Remove To List</button>
+
+                    <a :href="filesRoot+file.id+'/'+$root.urlEncode(file.filename)" target="_blank" title="Download Link">🔗</a>
                 </form>
             </template>
             <template v-else>
@@ -105,7 +107,7 @@ input[type="submit"], button {
 </style>
 
 <script>
-import { apiRoot, thumbsRoot } from '../constants'
+import { apiRoot, thumbsRoot, filesRoot } from '../constants'
 import { api, formatSize } from '../utils'
 
 import ProgressBar from './ProgressBar'
@@ -120,6 +122,7 @@ export default {
     },
     data() {
         return {
+            filesRoot,
             finished: false,
             file: null,
             error: null,
