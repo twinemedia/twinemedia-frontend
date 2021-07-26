@@ -32,7 +32,7 @@
             </div>
         </center>
         <div v-else>
-            <br><br>
+            <br>
             <center>
                 <h1>{{ file.name ? file.name : file.filename }}</h1>
                 <br><br>
@@ -143,6 +143,13 @@
                                 <td>{{ file.file_hash }}</td>
                             </tr>
                             <br>
+                            <template v-if="$root.hasPermission('sources.view')">
+                                <tr>
+                                    <td>Media Source</td>
+                                    <td><router-link :to="'/source/'+file.source">{{ file.source_name }}</router-link></td>
+                                </tr>
+                                <br>
+                            </template>
                             <template v-if="file.parent">
                                 <tr>
                                     <td>Parent File</td>
