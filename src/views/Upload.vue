@@ -12,6 +12,9 @@
                 <i>Max size: {{ formatSize(maxUpload) }}</i>
             </center>
         </div>
+        <div v-if="$root.hasPermission('sources.list')" id="source-area">
+            🔼 Upload to <source-chooser v-model="source" />
+        </div>
         <div id="progress-area" :key="i">
             <template v-for="id in Object.keys(uploads).reverse()">
                 <div v-if="uploads[id].id" :key="id">
@@ -48,6 +51,13 @@
     z-index: 0;
     transform: translateY(30%);
 }
+#source-area {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #3e8036;
+    border-right: 1px solid #3e8036;
+}
 #files {
     opacity: 0;
     width: 97%;
@@ -63,7 +73,8 @@
 import { api, formatSize } from '../utils'
 import { apiRoot } from '../constants'
 import axios from 'axios'
-import UploadProgress from '../components/UploadProgress.vue'
+import UploadProgress from '../components/UploadProgress'
+import SourceChooser from '../components/SourceChooser'
 
 export default {
     name: 'Upload',
@@ -71,14 +82,16 @@ export default {
         return {
             uploads: Window.vue.uploads,
             i: 0,
-            maxUpload: this.$root.account.max_upload
+            maxUpload: this.$root.account.max_upload,
+            source: this.$root.account.default_source
         }
     },
     mounted() {
         
     },
     components: {
-        upload: UploadProgress
+        upload: UploadProgress,
+        'source-chooser': SourceChooser
     },
     methods: {
         formatSize,
@@ -122,7 +135,8 @@ export default {
                     {
                         headers: {
                             'Content-Type': 'multipart/form-data',
-                            'Authorization': 'Bearer '+api.token()
+                            'Authorization': 'Bearer '+api.token(),
+                            'X-MEDIA-SOURCE': isNaN(this.source) ? this.$root.account.default_source : this.source
                         },
                         onUploadProgress(e) {
                             upl.progress = Math.round( ( e.loaded / e.total ) * 100)
