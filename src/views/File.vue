@@ -232,7 +232,7 @@
                             <th>Filename</th>
                             <th>Size</th>
                             <th>Type</th>
-                            <th>Uploader</th>
+                            <th>Creator</th>
                             <th>File Link</th>
                         </tr>
                         <template v-for="file in file.children">
