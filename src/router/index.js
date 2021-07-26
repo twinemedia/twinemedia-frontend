@@ -258,6 +258,14 @@ const routes = [
         }
     },
     {
+        path: '/tasks',
+        name: 'tasks',
+        component: () => import(/* webpackChunkName: "tasks" */ '../views/Tasks.vue'),
+        meta: {
+            title: 'Tasks | '+appName
+        }
+    },
+    {
         path: '*',
         name: 'not-found',
         component: () => import(/* webpackChunkName: "notfound" */ '../views/NotFound.vue'),
