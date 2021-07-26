@@ -136,7 +136,7 @@ export default {
 
         if(this.value) {
             if(this.usingAdvancedInput) {
-                this.filter = this.value.filter
+                this.filter = this.value.filter || ''
                 this.selected = this.value.selected
             } else {
                 this.selected = this.value
@@ -154,7 +154,7 @@ export default {
     watch: {
         value(val) {
             if(this.usingAdvancedInput) {
-                this.filter = val.filter
+                this.filter = val.filter || ''
                 this.selected = val.selected
             } else {
                 this.selected = val
