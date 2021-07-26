@@ -55,18 +55,6 @@ Window.vue = new Vue({
             this.pasteModalVisible = false
         },
         hasPermission: api.hasPermission,
-        formatSize(size) {
-            var fmt = `${size} bytes`
-
-            if(size >= 1024*1024*1024)
-                fmt = `${(size/(1024*1024*1024)).toFixed(2)} gigabytes`
-            else if(size >= 1024*1024)
-                fmt = `${(size/(1024*1024)).toFixed(2)} megabytes`
-            else if(size >= 1024)
-                fmt = `${(size/1024).toFixed(2)} kilobytes`
-
-            return fmt
-        },
         escapeHtml: escapeHTML,
         urlEncode(txt) {
             return encodeURI(txt)

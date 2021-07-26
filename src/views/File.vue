@@ -121,7 +121,7 @@
                             <tr>
                                 <td>File Size</td>
                                 <td>
-                                    {{ $root.formatSize(file.size) }}
+                                    {{ formatSize(file.size) }}
                                     <template v-if="file.size >= 1024">({{ file.size }} bytes)</template>
                                 </td>
                             </tr>
@@ -341,7 +341,7 @@ input[type="text"] {
 </style>
 
 <script>
-import { api, escapeHTMLAndLinkifyURLs } from '../utils'
+import { api, escapeHTMLAndLinkifyURLs, formatSize } from '../utils'
 import { apiRoot, filesRoot, thumbsRoot } from '../constants'
 import { addHandler, removeHandler } from '../websocket'
 
@@ -429,6 +429,7 @@ export default {
         this.progressListenerId = null
     },
     methods: {
+        formatSize,
         encodeURIComponent,
         async init() {
             var id = this.$route.params.file

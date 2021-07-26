@@ -47,7 +47,7 @@
                 <template v-if="upload.finished">
                     - <router-link :to='`/file/${upload.id}`'>View file</router-link>
                 </template>
-                <p>Size: <b>{{ $root.formatSize(upload.size) }}</b></p>
+                <p>Size: <b>{{ formatSize(upload.size) }}</b></p>
                 <p>
                     Status:
                     <b v-if="upload.error">Error</b>
@@ -106,7 +106,7 @@ input[type="submit"], button {
 
 <script>
 import { apiRoot, thumbsRoot } from '../constants'
-import { api } from '../utils'
+import { api, formatSize } from '../utils'
 
 import ProgressBar from './ProgressBar'
 import TagInput from './TagInput'
@@ -167,6 +167,7 @@ export default {
         }
     },
     methods: {
+        formatSize,
         async save() {
             this.saving = true
 

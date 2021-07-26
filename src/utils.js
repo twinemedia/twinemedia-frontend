@@ -228,3 +228,39 @@ export function escapeHTMLAndLinkifyURLs(htmlWithURLs) {
 	var regex = /(\b(https?|):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig
     return escapeHTML(htmlWithURLs).replace(regex, '<a href="$1">$1</a>')
 }
+
+/**
+ * Returns an empty string if the provided number is 1, otherwise returns "s".
+ * Used for English pluralization.
+ * @param {number} num The number
+ * @returns An empty string if the provided number is 1, otherwise returns "s"
+ */
+export function s(num) {
+	return num == 1 ? '' : 's'
+}
+
+/**
+ * Formats a file size as a human-readable value like "2 kilobytes" or "1 gigabyte"
+ * @param {number} size The file size in bytes
+ * @returns A human-readable corresponding to the provided file size
+ */
+export function formatSize(size) {
+	var num
+	var name
+
+	if(size >= 1000000000) {
+		num = (size/1000000000).toFixed(2)
+		name = 'gigabyte'
+	} else if(size >= 1000000) {
+		num = (size/1000000).toFixed(2)
+		name = 'megabyte'
+	} else if(size >= 1000) {
+		num = (size/1000).toFixed(2)
+		name = 'kilobyte'
+	} else {
+		num = size
+		name = 'byte'
+	}
+
+	return num+' '+name+s(num)
+}

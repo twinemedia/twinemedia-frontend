@@ -9,7 +9,7 @@
             <input type="file" id="files" multiple ref="files" @change="uploadFiles"/>
             <center>
                 <h2>Drop files here</h2>
-                <i>Max size: {{ $root.formatSize(maxUpload) }}</i>
+                <i>Max size: {{ formatSize(maxUpload) }}</i>
             </center>
         </div>
         <div id="progress-area" :key="i">
@@ -60,7 +60,7 @@
 </style>
 
 <script>
-import { api } from '../utils'
+import { api, formatSize } from '../utils'
 import { apiRoot } from '../constants'
 import axios from 'axios'
 import UploadProgress from '../components/UploadProgress.vue'
@@ -81,10 +81,11 @@ export default {
         upload: UploadProgress
     },
     methods: {
+        formatSize,
         async uploadFile(file) {
             // Check size
             if(file.size > this.maxUpload) {
-                alert(`Size of file "${file.name}" exceeds max upload size of ${this.$root.formatSize(this.maxUpload)}`)
+                alert(`Size of file "${file.name}" exceeds max upload size of ${formatSize(this.maxUpload)}`)
                 return
             }
 

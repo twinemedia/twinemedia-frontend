@@ -2,7 +2,7 @@
     <div v-if="display == 'block'" class="file-listing">
         <p><b>{{ file.name ? file.name : file.filename }}</b></p>
         <p>Type: {{ file.mime }}</p>
-        <p>Size: {{ $root.formatSize(file.size) }}</p>
+        <p>Size: {{ formatSize(file.size) }}</p>
     </div>
     <div v-else-if="display == 'preview'" class="file-listing file-listing-preview">
         <router-link v-if="canView" :to="'/file/'+file.id">
@@ -53,7 +53,7 @@
             <i>File is processing</i>
         </td>
         <td v-else>
-            {{ $root.formatSize(file.size) }}
+            {{ formatSize(file.size) }}
             <template v-if="file.size >= 1024">({{ file.size }} bytes)</template>
         </td>
         <td>
@@ -110,6 +110,7 @@
 
 <script>
 import { filesRoot, thumbsRoot } from '../constants'
+import { formatSize } from '../utils'
 
 export default {
     name: 'FileListing',
@@ -122,6 +123,9 @@ export default {
                      ||
                      (this.$root.hasPermission('files.view.all') && this.file.creator != this.$root.account.id)
         }
+    },
+    methods: {
+        formatSize
     }
 }
 </script>
