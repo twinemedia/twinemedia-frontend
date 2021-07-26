@@ -213,7 +213,6 @@ export default {
     },
     data() {
         return {
-            ding: null,
             list: {},
             name: '',
             description: '',
