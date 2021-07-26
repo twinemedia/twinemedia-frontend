@@ -143,14 +143,15 @@
                                 <td>{{ file.file_hash }}</td>
                             </tr>
                             <br>
-                            <tr>
-                                <td>Parent File</td>
-                                <td>
-                                    <router-link v-if="file.parent" :to="'/file/'+file.parent.id">{{ file.parent.name ? file.parent.name : file.parent.filename }}</router-link>
-                                    <template v-else>None</template>
-                                </td>
-                            </tr>
-                            <br>
+                            <template v-if="file.parent">
+                                <tr>
+                                    <td>Parent File</td>
+                                    <td>
+                                        <router-link :to="'/file/'+file.parent.id">{{ file.parent.name ? file.parent.name : file.parent.filename }}</router-link>
+                                    </td>
+                                </tr>
+                                <br>
+                            </template>
                             <tr>
                                 <td>Uploaded At</td>
                                 <td>{{ file.created_on }}</td>
