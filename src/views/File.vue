@@ -120,9 +120,8 @@
                             <br>
                             <tr>
                                 <td>File Size</td>
-                                <td>
+                                <td :title="file.size+' bytes'">
                                     {{ formatSize(file.size) }}
-                                    <template v-if="file.size >= 1024">({{ file.size }} bytes)</template>
                                 </td>
                             </tr>
                             <br>
