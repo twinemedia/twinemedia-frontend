@@ -44,10 +44,7 @@ export default {
     },
     watch: {
         value(val) {
-            if(this.value)
-                this.selected.selected = val
-            else
-                this.selected.selected = this.$root.account.default_source
+            this.selected.selected = val
         }
     },
     computed: {
