@@ -28,7 +28,7 @@
 
 <style>
 .uploads-widget {
-    width: 480px;
+    width: 500px;
     position: fixed;
     right: 0px;
     bottom: 0px;
