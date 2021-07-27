@@ -53,6 +53,9 @@ export default {
             monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         }
     },
+    mounted() {
+        this.updateValue()
+    },
     methods: {
         stringOrNumberToDateOrNull(strOrNum) {
             if(strOrNum == null || strOrNum == undefined)
