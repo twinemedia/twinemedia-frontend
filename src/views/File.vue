@@ -88,6 +88,13 @@
                                     <td><tag-input placeholder="Tags" v-model="edits.tags" style="width: 100%" /></td>
                                 </tr>
                                 <br>
+                                <template v-if="canChangeCreator">
+                                    <tr>
+                                        <td>Creator</td>
+                                        <td><account-chooser v-model="edits.creator" /></td>
+                                    </tr>
+                                    <br>
+                                </template>
                             </table>
                             <div v-if="saveError" class="error">
                                 {{ saveError }}
@@ -356,6 +363,7 @@ import FileListing from '../components/FileListing'
 import TagInput from '../components/TagInput'
 import MediaSettingsChooser from '../components/MediaSettingsEditor'
 import ProgressBar from '../components/ProgressBar'
+import AccountChooser from '../components/AccountChooser'
 
 export default {
     name: 'File',
@@ -382,6 +390,9 @@ export default {
         }
     },
     computed: {
+        canChangeCreator() {
+            return this.$root.hasPermission('files.ownership.all') || (this.$root.hasPermission('files.ownership') && this.file.creator == this.$root.account.id)
+        },
         filename: {
             get() {
                 if(this.edits) {
@@ -419,7 +430,8 @@ export default {
         'file-listing': FileListing,
         'tag-input': TagInput,
         'media-settings-chooser': MediaSettingsChooser,
-        'progress-bar': ProgressBar
+        'progress-bar': ProgressBar,
+        'account-chooser': AccountChooser
     },
     mounted() {
         this.init()
@@ -461,7 +473,8 @@ export default {
                         name: this.file.name,
                         filename: this.file.filename,
                         description: this.file.description,
-                        tags: this.file.tags.join(' ')
+                        tags: this.file.tags.join(' '),
+                        creator: this.file.creator
                     }
 
                     if(this.file.processing) {
@@ -507,6 +520,15 @@ export default {
                     params.filename = this.edits.filename.trim()
                 if(this.edits.description != null)
                     params.description = this.edits.description.trim()
+                if(this.edits.creator != this.file.creator)
+                    params.creator = this.edits.creator
+                
+                // Make sure creator isn't null
+                if(params.creator == null) {
+                    this.error = 'Creator must be specified'
+                    this.saving = false
+                    return
+                }
 
                 // Collect tags
                 if(this.edits.tags.trim().length > 0) {
@@ -534,6 +556,7 @@ export default {
                     this.file.description = this.edits.description ? this.edits.description.trim() : ''
                     this.description = this.file.description
                     this.file.tags = this.edits.tags.split(' ')[0].length < 1 ? [] : this.edits.tags.split(' ')
+                    this.file.creator = this.edits.creator
                     this.file.modified_on = new Date().toISOString()
 
                     this.saving = false
