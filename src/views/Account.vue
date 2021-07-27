@@ -43,6 +43,13 @@
                                     </tr>
                                     <br>
                                     <tr>
+                                        <td>Default Source</td>
+                                        <td>
+                                            <source-chooser v-model="edits.defaultSource" noDefault />
+                                        </td>
+                                    </tr>
+                                    <br>
+                                    <tr>
                                         <td>Permissions (space separated)</td>
                                         <td>
                                             <input v-if="edits.admin == 'true' || edits.admin == true" placeholder="All permissions" type="text" disabled />
@@ -115,6 +122,14 @@
                                 <tr>
                                     <td>Files Created</td>
                                     <td>{{ account.files_created }}</td>
+                                </tr>
+                                <br>
+                                <tr>
+                                    <td>Default Source</td>
+                                    <td>
+                                        <router-link v-if="account.default_source_name" :to="'/source/'+account.default_source">{{ account.default_source_name }}</router-link>
+                                        <i v-else>Deleted Source</i>
+                                    </td>
                                 </tr>
                                 <br>
                                 <tr>
@@ -193,6 +208,7 @@ input[type="text"], input[type="password"] {
 import { api } from '../utils'
 import { apiRoot } from '../constants'
 import PermissionsGuide from '../components/PermissionsGuide'
+import SourceChooser from '../components/SourceChooser'
 
 export default {
     name: 'Account',
@@ -212,7 +228,8 @@ export default {
         }
     },
     components: {
-        'permissions-guide': PermissionsGuide
+        'permissions-guide': PermissionsGuide,
+        'source-chooser': SourceChooser
     },
     mounted() {
         this.init()
@@ -242,7 +259,8 @@ export default {
                         admin: this.account.admin,
                         permissions: this.account.permissions.join(' '),
                         password: '',
-                        passwordConfirm: ''
+                        passwordConfirm: '',
+                        defaultSource: this.account.default_source
                     }
                 
                 this.loading = false
@@ -269,9 +287,18 @@ export default {
                 return
             }
 
+            // Ensure source is selected
+            if(this.edits.defaultSource == null) {
+                this.saveError = 'Default source must be selected'
+                this.saving = false
+                return
+            }
+
             // Catch all errors
             try {
-                var params = {}
+                var params = {
+                    defaultSource: this.edits.defaultSource
+                }
 
                 if(this.edits.password.length > 0) {
                     // Check if passwords match
@@ -319,6 +346,7 @@ export default {
                     this.account.email = this.edits.email.trim().toLowerCase()
                     this.account.admin = this.edits.admin == 'true'
                     this.account.permissions = JSON.parse(params.permissions)
+                    this.account.default_source = this.edits.defulatSource
 
                     this.saveError = null
                     this.saving = false
