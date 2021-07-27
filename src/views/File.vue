@@ -524,8 +524,8 @@ export default {
                     params.creator = this.edits.creator
                 
                 // Make sure creator isn't null
-                if(params.creator == null) {
-                    this.error = 'Creator must be specified'
+                if(params.creator === null) {
+                    this.saveError = 'Creator must be specified'
                     this.saving = false
                     return
                 }
