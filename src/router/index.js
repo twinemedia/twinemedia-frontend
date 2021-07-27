@@ -258,6 +258,14 @@ const routes = [
         }
     },
     {
+        path: '/source/:id',
+        name: 'source',
+        component: () => import(/* webpackChunkName: "source" */ '../views/Source.vue'),
+        meta: {
+            title: 'Media Sources | '+appName
+        }
+    },
+    {
         path: '/tasks',
         name: 'tasks',
         component: () => import(/* webpackChunkName: "tasks" */ '../views/Tasks.vue'),
