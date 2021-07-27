@@ -41,6 +41,10 @@
 </template>
 
 <style scoped>
+.dropdown {
+    display: inline-block;
+}
+
 .dropdown-arrow {
     position: absolute;
     display: block;
