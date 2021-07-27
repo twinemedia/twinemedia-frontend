@@ -44,6 +44,15 @@
                             <td>Confirm Password</td>
                             <td><input placeholder="Confirm Password" type="password" v-model="passwordConfirm" /></td>
                         </tr>
+                        <br>
+                        <tr>
+                            <td>Default Media Source</td>
+                            <td>
+                                <source-chooser v-model="defaultSource" noDefault />
+                                <br>
+                                <i>This source should be either global or<br>have its creator changed to the new account.</i>
+                            </td>
+                        </tr>
                         <br><br>
                     </table>
                     <b @click="showingPermissions = !showingPermissions" style="cursor: pointer">
@@ -104,6 +113,7 @@ input[type="text"], input[type="password"] {
 import { api } from '../utils'
 import { apiRoot } from '../constants'
 import PermissionsGuide from '../components/PermissionsGuide'
+import SourceChooser from '../components/SourceChooser'
 
 export default {
     name: 'CreateAccount',
@@ -117,12 +127,14 @@ export default {
             showingPermissions: false,
             password: '',
             passwordConfirm: '',
+            defaultSource: null,
             creating: false,
             error: null
         }
     },
     components: {
-        'permissions-guide': PermissionsGuide
+        'permissions-guide': PermissionsGuide,
+        'source-chooser': SourceChooser
     },
     methods: {
         async create() {
@@ -130,57 +142,73 @@ export default {
             this.error = null
 
             // Ensure name isn't blank
-            if(this.name.trim().length > 0) {
-                // Ensure email address is valid
-                if(/.+@.+\..+/g.test(this.email.trim())) {
-                    // Check if passwords aren't blank
-                    if(this.password.length > 0 && this.passwordConfirm.length > 0) {
-                        // Check if passwords match
-                        if(this.password == this.passwordConfirm) {
-                            // Catch all errors
-                            try {
-                                var permissions = []
-
-                                // Collect permissions
-                                var perms = this.permissions.trim().split(' ')
-                                if(perms[0].length < 1)
-                                    perms = []
-
-                                for(let i = 0; i < perms.length; i++) {
-                                    if(!permissions.includes(perms[i].trim().toLowerCase()))
-                                        permissions.push(perms[i].trim().toLowerCase())
-                                }
-
-                                // Send create POST
-                                var resp = await api.post(apiRoot+'accounts/create', {
-                                    name: this.name.trim(),
-                                    email: this.email.trim().toLowerCase(),
-                                    admin: this.admin,
-                                    permissions: this.admin == 'true' ? '[]' : JSON.stringify(permissions),
-                                    password: this.password
-                                })
-
-                                if(resp.status == 'success')
-                                    this.$router.push('/accounts')
-                                else if(resp.status == 'error')
-                                    this.error = 'API returned error: '+resp.error
-                                else
-                                    this.error = 'API returned unknown status "'+resp.status+'"'
-                            } catch(err) {
-                                this.error = 'Error creating account: '+err
-                            }
-                        } else {
-                            this.error = 'Passwords must match'
-                        }
-                    } else {
-                        this.error = 'Passwords must not be blank'
-                    }
-                } else {
-                    this.error = 'Account email must be valid'
-                }
-            } else {
+            if(this.name.trim().length < 1) {
                 this.error = 'Account name must not be blank'
+                this.creating = false
+                return
             }
+
+            // Ensure email address is valid
+            if(!(/.+@.+\..+/g.test(this.email.trim()))) {
+                this.error = 'Account email must be valid'
+                this.creating = false
+                return
+            }
+            
+            // Check if passwords aren't blank
+            if(this.password.length < 1 || this.passwordConfirm.length < 1) {
+                this.error = 'Passwords must not be blank'
+                this.creating = false
+                return
+            }
+
+            // Check if passwords match
+            if(this.password != this.passwordConfirm) {
+                this.error = 'Passwords must match'
+                this.creating = false
+                return
+            }
+
+            // Check if default source is selected
+            if(this.defaultSource == null) {
+                this.error = 'Default source must be selected'
+                this.creating = false
+                return
+            }
+
+            // Catch all errors
+            try {
+                var permissions = []
+
+                // Collect permissions
+                var perms = this.permissions.trim().split(' ')
+                if(perms[0].length < 1)
+                    perms = []
+
+                for(let i = 0; i < perms.length; i++) {
+                    if(!permissions.includes(perms[i].trim().toLowerCase()))
+                        permissions.push(perms[i].trim().toLowerCase())
+                }
+
+                // Send create POST
+                var res = await api.post(apiRoot+'accounts/create', {
+                    name: this.name.trim(),
+                    email: this.email.trim().toLowerCase(),
+                    admin: this.admin,
+                    permissions: this.admin == 'true' ? '[]' : JSON.stringify(permissions),
+                    password: this.password,
+                    defaultSource: this.defaultSource
+                })
+
+                if(res.status == 'success')
+                    this.$router.push('/account/'+res.id)
+                else
+                    this.error = 'API returned error: '+res.error
+
+            } catch(err) {
+                this.error = 'Error creating account: '+err
+            }
+
             this.creating = false
         }
     }
