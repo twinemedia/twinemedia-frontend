@@ -3,9 +3,11 @@
         <div v-if="error" class="error">{{ error }}</div>
         <template v-else>
             <dropdown v-model="selected" @change="updateValue()" :values="sourceMap" :loading="loading" :placeholder="loading ? 'Loading sources...' : 'Select source'" style="width: 250px" advancedInput />
-            <button v-if="loading" disabled>Loading...</button>
-            <button v-else-if="$root.account.default_source == selected.selected" disabled>Already Default</button>
-            <button v-else @click="setDefault()" :disabled="selected.selected == null">Set Default</button>
+            <template v-if="!usingNoDefault">
+                <button v-if="loading" disabled>Loading...</button>
+                <button v-else-if="$root.account.default_source == selected.selected" disabled>Already Default</button>
+                <button v-else @click="setDefault()" :disabled="selected.selected == null">Set Default</button>
+            </template>
         </template>
     </div>
 </template>
@@ -27,7 +29,7 @@ import Dropdown from './Dropdown.vue'
 
 export default {
     name: 'SourceChooser',
-    props: ['value'],
+    props: ['value', 'noDefault'],
     data() {
         return {
             error: null,
@@ -48,6 +50,10 @@ export default {
         }
     },
     computed: {
+        usingNoDefault() {
+            var val = this.noDefault
+            return val === '' || val === 'true' || val === true
+        },
         sourceMap() {
             var res = {}
 
