@@ -179,10 +179,11 @@ export default {
     methods: {
         async init() {
             await sleep(10)
+
             if(this.$route.params.tags) {
                 this.currentPage = (this.$route.params.page*1)-1
-                this.currentTags = this.$route.params.tags.split('+')
-                this.tags = this.currentTags.join(' ')
+                this.tags = this.$route.params.tags
+                this.currentTags = this.processTags()
 
                 await this.fetchFiles()
             } else {
