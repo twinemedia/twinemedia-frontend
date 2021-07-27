@@ -94,7 +94,7 @@ export default {
     data() {
         return {
             errors: [],
-            config: this.value,
+            config: null,
             builtConfig: false
         }
     },
@@ -113,7 +113,7 @@ export default {
             config[key] = field.default == null ? undefined : field.default
         })
 
-        if(this.value)
+        if('config' in this.value)
             this.config = this.value.config
         else
             this.config = config
@@ -123,7 +123,8 @@ export default {
     },
     watch: {
         value(val) {
-            this.config = val.config
+            if('config' in this.config)
+                this.config = val.config
         }
     },
     computed: {
