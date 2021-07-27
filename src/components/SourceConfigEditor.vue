@@ -90,11 +90,11 @@ import { sleep } from '../utils'
 
 export default {
     name: 'SourceConfigEditor',
-    props: ['schema'],
+    props: ['value', 'schema'],
     data() {
         return {
             errors: [],
-            config: {},
+            config: this.value,
             builtConfig: false
         }
     },
@@ -113,10 +113,18 @@ export default {
             config[key] = field.default == null ? undefined : field.default
         })
 
-        this.config = config
+        if(this.value)
+            this.config = this.value.config
+        else
+            this.config = config
         this.builtConfig = true
 
         this.updateValue()
+    },
+    watch: {
+        value(val) {
+            this.config = val.config
+        }
     },
     computed: {
         sections() {
