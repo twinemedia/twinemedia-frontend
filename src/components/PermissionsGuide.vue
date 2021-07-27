@@ -18,6 +18,7 @@
                 <p> - files.edit(<i>.all</i>) <i>Allows editing file info</i></p>
                 <p> - files.delete(<i>.all</i>) <i>Allows deleting files</i></p>
                 <p> - files.child(<i>.all</i>) <i>Allows creating child media files</i></p>
+                <p> - files.ownership(<i>.all</i>) <i>Allows changing the owner of files</i></p>
             </div>
             <div class="permission">
                 <p><b>tags</b></p>
