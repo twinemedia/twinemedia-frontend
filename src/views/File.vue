@@ -204,6 +204,26 @@
                                     <a :href="filesRoot+file.id">File link</a>
                                     <br>
                                     <a :href="filesRoot+file.id+'/'+$root.urlEncode(file.filename)">File link with filename</a>
+                                    <br>
+                                    <a v-if="showLinkCreator" href="" @click.prevent="showLinkCreator = false">Cancel</a>
+                                    <a v-else href="" @click.prevent="showLinkCreator = true">Create temporary link</a>
+                                    <div v-if="showLinkCreator">
+                                        <input type="checkbox" v-model="linkCreatorExact" id="link-exact-time">
+                                        <label for="link-exact-time">Use exact time</label>
+                                        Link expires
+                                        <template v-if="linkCreatorExact">
+                                            at <time-input v-model="linkCreatorTime" />
+                                        </template>
+                                        <template v-else>
+                                            in <input style="width: 60px" type="number" v-model="linkCreatorMinutes"> minutes
+                                        </template>
+                                        <button v-if="linkCreatorCreating" disabled>Creating...</button>
+                                        <button v-else @click="createLink()">Create Link</button>
+                                        <template v-if="linkCreatorLink">
+                                            <br><br>
+                                            <a :href="filesRoot+linkCreatorLink+'/'+$root.urlEncode(file.filename)">Temporary Link</a>
+                                        </template>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -364,6 +384,7 @@ import TagInput from '../components/TagInput'
 import MediaSettingsChooser from '../components/MediaSettingsEditor'
 import ProgressBar from '../components/ProgressBar'
 import AccountChooser from '../components/AccountChooser'
+import TimeInput from '../components/TimeInput'
 
 export default {
     name: 'File',
@@ -386,7 +407,13 @@ export default {
             processProgress: -1,
             processError: null,
             progressListenerId: null,
-            description: null
+            description: null,
+            showLinkCreator: false,
+            linkCreatorExact: false,
+            linkCreatorTime: new Date(),
+            linkCreatorMinutes: 10,
+            linkCreatorCreating: false,
+            linkCreatorLink: null
         }
     },
     computed: {
@@ -431,7 +458,8 @@ export default {
         'tag-input': TagInput,
         'media-settings-chooser': MediaSettingsChooser,
         'progress-bar': ProgressBar,
-        'account-chooser': AccountChooser
+        'account-chooser': AccountChooser,
+        'time-input': TimeInput
     },
     mounted() {
         this.init()
@@ -621,6 +649,29 @@ export default {
 
                 this.creatingChild = false
             }
+        },
+        async createLink() {
+            this.linkCreatorCreating = true
+
+            // Work out expire time
+            var expire
+            if(this.linkCreatorExact) {
+                expire = this.linkCreatorTime
+            } else {
+                var date = new Date()
+                date.setMinutes(date.getMinutes()+this.linkCreatorMinutes)
+                expire = date.toISOString()
+            }
+
+            var res = await api.get(apiRoot+'media/'+this.$route.params.file+'/link', { expire })
+
+            if(res.status == 'success') {
+                this.linkCreatorLink = res.link
+            } else {
+                this.error = 'API returned error: '+res.error
+            }
+
+            this.linkCreatorCreating = false
         }
     }
 }
