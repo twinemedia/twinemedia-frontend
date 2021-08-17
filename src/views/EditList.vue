@@ -57,7 +57,7 @@
 								</select>
 							</td>
 						</tr>
-						<template v-if="type === 1">
+						<template v-if="type == 1">
 							<br>
 							<tr>
 								<td>Source Tags</td>

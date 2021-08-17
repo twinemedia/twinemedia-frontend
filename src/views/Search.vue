@@ -87,7 +87,7 @@
 						<button v-if="files.length >= 50" @click="nextPage()">&gt;</button>
 						<button v-else disabled>&gt;</button>
 					</p>
-					<template v-if="displayType === 1">
+					<template v-if="displayType == 1">
 						<template v-for="file in files">
 							<file-listing :key="file.id" :file="file" display="preview" addable="true" />
 						</template>
