@@ -165,7 +165,7 @@ export default {
 			const res = {}
 
 			// Check for validity
-			this.errors = ['nice']
+			this.errors = []
 			let valid = true
 			const fieldDefs = this.schema.fields
 			const config = this.config
