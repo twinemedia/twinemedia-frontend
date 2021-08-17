@@ -29,22 +29,24 @@ export const api = {
 	 * @returns {boolean} Whether the user has the specified permissions
 	 */
 	hasPermission(permission) {
+		let has
+
 		if(Window.vue) {
-			var acc = Window.vue.account || { permissions: [] }
-			var has = false
-			
-			// Overrride permission check if the account has admin privileges, or has that exact permission
+			const acc = Window.vue.account || { permissions: [] }
+			has = false
+
+			// Override permission check if the account has admin privileges, or has that exact permission
 			if(acc.admin || acc.permissions.includes(permission) || acc.permissions.includes(permission+'.all') || acc.permissions.includes('*')) {
 				has = true
 			} else {
 				// Check if user has permission or all parent permissions
-				var perm = ''
+				let perm = ''
 				for(let j = 0; j < permission.split('.').length; j++) {
-					var child = permission.split('.')[j]
+					const child = permission.split('.')[j]
 					perm += child+'.'
 					for(let x = 0; x < acc.permissions.length; x++) {
-						var p = acc.permissions[x];
-						if(p == perm+'*') {
+						const p = acc.permissions[x]
+						if(p === perm+'*') {
 							has = true
 							break
 						}
@@ -63,12 +65,12 @@ export const api = {
 	 * @param {Object} json The data to send serialized as query parameters (optional)
 	 * @returns {Object} The parsed JSON response
 	 */
-	get: async function(url, json) {
+	async get(url, json) {
 		let resp
 		if(json) {
 			let params = '?'
 			Object.keys(json).forEach(key => {
-				if(json[key] != undefined) {
+				if(json[key] !== undefined) {
 					if(params.length > 1) params+='&'
 					params+=encodeURIComponent(key)+'='+encodeURIComponent(json[key])
 				}
@@ -96,7 +98,7 @@ export const api = {
 	 * @param {Object} json The data to send as a JSON body (optional)
 	 * @returns {Object} The parsed JSON response
 	 */
-	post: async function(url, json) {
+	async post(url, json) {
 		let resp
 		if(json) {
 			resp = await fetch(url, {
@@ -145,16 +147,16 @@ export function asteriskStringToQueryString(asteriskString) {
  * @returns {string} The corresponding asterisk string generated from the query string
  */
 export function queryStringToAsteriskString(queryString) {
-	var newStr = ''
+	let newStr = ''
 
-	for(var i = 0; i < queryString.length; i++) {
-		var char = queryString[i]
-		var next = i+1 < queryString.length ? queryString[i+1] : null
+	for(let i = 0; i < queryString.length; i++) {
+		const char = queryString[i]
+		const next = i + 1 < queryString.length ? queryString[i + 1] : null
 
-		if(char == '\\' && next == '%') { // Check for \%
+		if(char === '\\' && next === '%') { // Check for \%
 			newStr += '%'
 			i++
-		} else if(char == '%') { // Check for %
+		} else if(char === '%') { // Check for %
 			newStr += '*'
 		} else { // Normal
 			newStr += char
@@ -170,7 +172,7 @@ export function queryStringToAsteriskString(queryString) {
  * @returns {string} The generated title
  */
 export function filenameToTitle(filename) {
-	var name = filename
+	let name = filename
 
 	// Cut off extension if present
 	if(filename.lastIndexOf('.') > 0)
@@ -178,8 +180,8 @@ export function filenameToTitle(filename) {
 
 	// Replace underscores and dashes with spaces with spaces
 	name = name
-			.replaceAll('_', ' ')
-			.replace(/-(?! )/g, ' ')
+		.replaceAll('_', ' ')
+		.replace(/-(?! )/g, ' ')
 
 	// Capitalize first letter
 	name = name[0].toUpperCase()+name.substring(1)
@@ -193,7 +195,7 @@ export function filenameToTitle(filename) {
  * @param {string} text The text to copy to the user's clipboard
  */
 export function clipboardCopy(text) {
-	var elem = document.createElement('input');
+	const elem = document.createElement('input')
 	document.body.appendChild(elem)
 	
 	elem.style.position = 'fixed'
@@ -211,12 +213,12 @@ export function clipboardCopy(text) {
  */
 export function escapeHTML(html) {
 	return html
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&#34;')
-        .replace(/'/g, '&#39;')
-        .replace(/\n/g, '<br>')
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&#34;')
+		.replace(/'/g, '&#39;')
+		.replace(/\n/g, '<br>')
 }
 
 /**
@@ -225,8 +227,8 @@ export function escapeHTML(html) {
  * @returns {string} The escaped and processed HTML
  */
 export function escapeHTMLAndLinkifyURLs(htmlWithURLs) {
-	var regex = /(\b(https?|):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig
-    return escapeHTML(htmlWithURLs).replace(regex, '<a href="$1">$1</a>')
+	const regex = /(\b(https?|):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig
+	return escapeHTML(htmlWithURLs).replace(regex, '<a href="$1">$1</a>')
 }
 
 /**
@@ -236,7 +238,7 @@ export function escapeHTMLAndLinkifyURLs(htmlWithURLs) {
  * @returns An empty string if the provided number is 1, otherwise returns "s"
  */
 export function s(num) {
-	return num == 1 ? '' : 's'
+	return num === 1 ? '' : 's'
 }
 
 /**
@@ -245,8 +247,8 @@ export function s(num) {
  * @returns A human-readable corresponding to the provided file size
  */
 export function formatSize(size) {
-	var num
-	var name
+	let num
+	let name
 
 	if(size >= 1000000000) {
 		num = (size/1000000000).toFixed(2)
