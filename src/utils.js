@@ -242,22 +242,23 @@ export function s(num) {
 }
 
 /**
- * Formats a file size as a human-readable value like "2 kilobytes" or "1 gigabyte"
+ * Formats a file size as a human-readable value like "2 kilobytes" or "1 gigabyte".
+ * Measurements are made in increments of 1024.
  * @param {number} size The file size in bytes
- * @returns A human-readable corresponding to the provided file size
+ * @returns {string} A human-readable corresponding to the provided file size
  */
 export function formatSize(size) {
 	let num
 	let name
 
-	if(size >= 1000000000) {
-		num = (size/1000000000).toFixed(2)
+	if(size >= 1073741824) {
+		num = (size/1073741824).toFixed(2)
 		name = 'gigabyte'
-	} else if(size >= 1000000) {
-		num = (size/1000000).toFixed(2)
+	} else if(size >= 1048576) {
+		num = (size/1048576).toFixed(2)
 		name = 'megabyte'
-	} else if(size >= 1000) {
-		num = (size/1000).toFixed(2)
+	} else if(size >= 1024) {
+		num = (size/1024).toFixed(2)
 		name = 'kilobyte'
 	} else {
 		num = size
