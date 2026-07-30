@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^0.21.2",
     "core-js": "^3.4.3",
-    "sockjs-client": "^1.5.1",
+    "sockjs-client": "^1.6.1",
     "vue": "^2.6.10",
     "vue-router": "^3.1.3"
   },
